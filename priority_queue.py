@@ -5,12 +5,12 @@ class PriorityQueue:
     def __init__(self):
         self.elements = []
 
-    def push(point, score):
-        heapq.heappush(self.elements, (score, point))
+    def push(element, score):
+        heapq.heappush(self.elements, (score, element))
 
     def pop():
         heapq.heappop(self.elements)
 
-    def pop_point():
+    def pop_element():
         heapq.heappop(self.elements)[1]
 
