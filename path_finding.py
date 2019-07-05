@@ -1,10 +1,26 @@
-import heuristic import priority_queue
+import heuristic
+import priority_queue
 import helper
 
 class PathFinder:
 
-    def __init__(cost_func):
+    def __init__(cost_func, is_valid_pos):
+        """
+        Initializes the path finder with relevant functions. Helps reduce the number of
+        parameters in a function.
+
+        Args:
+            cost_func: cost function ideally expected to be a sum of g(n) and h(n) to
+                use the harness the effectiveness of a* algorithm
+            is_valid_pos: takes a point and returns whether it is a valid position or not,
+                and is used in the a* algorithm to element potential points
+
+        Return:
+            List[(int, int)]: List of points to take to reach end in the forward direction
+        """
+
         self.cost_func = cost_func
+        self.is_valid_pos = is_valid_pos
 
     def find_path(*args):
         """
@@ -83,20 +99,49 @@ class PathFinder:
                 it can be used to generate the path and the next step
         """
 
-        queue = priority_queue.Priority_Queue()
-        queue.heappush(start, 0)
+        queue = priority_queue.PriorityQueue()
+        queue.push(0, start)
         store = {start: start}
 
         while (not queue.is_empty()):
-            pos = queue.heappop()
+            pos = queue.pop()
             if pos == end: return store  # return store on reaching end
 
-            pos_cost = self.cost_func(pos)
             next_moves = [helper.add_tuple_elements(pos, move) for move in moves]
-            valid_pos = [move for move in next_moves if is_valid_pos(move)]
-            next_pos = [next_pos for next_pos in valid_pos if self.cost_func(next_pos) <= pos_cost]
-            store[move] = pos for move in valid_moves if move not in store
-            queue.heappush(valid_move) for move in valid_moves
+            valid_pos = [(self.cost_func(move), move) for move in next_moves if self.is_valid_pos(move)]
+            valid_moves = [next_pos for next_pos in valid_pos if next_pos[0] <= pos[0]]
+            [store[move[1]] = pos for move in valid_moves if move[1] not in store]
+            [queue.push(valid_move) for move in valid_moves]
+
+        return {}
+
+    def simple_bfs(map, moves, start, end):
+        """
+        Performs bfs search on the map with the given set of moves
+
+        Args:
+            map: 2-D grid map with true and false indicating passable terrain
+            moves: list of allowed moves at each point
+            start: x and y coordinates of start point
+            end: x and y coordinates of end point
+
+        Returns:
+            store: contains the all the states encountered with links to parent states
+                it can be used to generate the path and the next step
+        """
+
+        queue = priority_queue.SimpleQueue()
+        queue.push(start)
+        store = {start: start}
+
+        while (not queue.is_empty()):
+            pos = queue.pop()
+            if pos == end: return store  # return store on reaching end
+
+            next_moves = [helper.add_tuple_elements(pos, move) for move in moves]
+            valid_pos = [move for move in next_moves if self.is_valid_pos(move)]
+            [store[move] = pos for move in valid_moves if move not in store]
+            [queue.push(valid_move) for move in valid_moves]
 
         return {}
 
