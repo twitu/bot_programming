@@ -1,5 +1,4 @@
-import heuristic
-import priority_queue
+import heuristic import priority_queue
 import helper
 
 class PathFinder:
@@ -7,26 +6,40 @@ class PathFinder:
     def __init__(cost_func):
         self.cost_func = cost_func
 
-    def path_from_start_to_end(map, moves, start, end):
+    def find_path(*args):
         """
         Takes start and end point and returns a list of points indicating path in the forward direction
 
         Args:
-            start {x, y}: dictionary contains x and y coordinates of start point
-            end   {x, y}: dictionary contains x and y coordinates of end point
+            *args: arguments required by generic_a_star function
 
         Return:
-            List[int]: List of points to take to reach end in the forward direction
+            List[(int, int)]: List of points to take to reach end in the forward direction
         """
-        store = generic_a_star(map, moves, start, end)
+
+        store = generic_a_star(*args)
         path = []
         path_itr = end
+
         while path_itr != path_itr:
             if path_itr not in store: break
             path.append(path_itr)
             path_itr = store[path_itr]
 
-        return path
+        return path.reverse()
+
+    def find_step(*args):
+        """
+        Takes start and end point and returns next step in the forward direction
+
+        Args:
+            *args: arguments required by generic_a_star function
+
+        Return:
+            (int, int): List of points to take to reach end in the forward direction
+        """
+
+        return find_path(*args)[0]
 
     def generic_a_star(map, moves, start, end):
         """
@@ -52,10 +65,11 @@ class PathFinder:
             if pos == end: return store  # return store on reaching end
 
             pos_cost = self.cost_func(pos)
-            next_moves = [helper.add_elements(pos, move) for move in moves]
+            next_moves = [helper.add_tuple_elements(pos, move) for move in moves]
             valid_pos = [move for move in next_moves if is_valid_pos(move)]
             next_pos = [next_pos for next_pos in valid_pos if self.cost_func(next_pos) <= pos_cost]
             store[move] = pos for move in valid_moves if move not in store
             queue.heappush(valid_move) for move in valid_moves
 
         return {}
+
