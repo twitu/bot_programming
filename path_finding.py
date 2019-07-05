@@ -41,6 +41,33 @@ class PathFinder:
 
         return find_path(*args)[0]
 
+    def repair_path(map, moves, prev_path, m_steps):
+        """
+        Takes an existing path and performs repair/recomputation upto m steps ahead
+
+        Args:
+            map: 2-D grid map with true and false indicating passable terrain
+            moves: list of allowed moves at each point
+            prev_path: previously calculated path where head of list indicates current position
+            m_steps: number of steps ahead, to repair
+
+        Return:
+            List[(int, int)]: List of points to take to reach end in the forward direction
+        """
+
+        start = moves[0]
+        end_index = m_steps if m_steps < len(prev_path) else -1
+        end = prev_path[end_index]
+
+        repaired_path = find_path(map, moves, start, end)
+
+        # extend path when end point is not same as end of previous path
+        if end_index != -1:
+            return repaired_path.extend(prev_path[end_index:-1])
+        else:
+            return repaired_path
+
+
     def generic_a_star(map, moves, start, end):
         """
         Performs an a* search on the map with the given set of moves
