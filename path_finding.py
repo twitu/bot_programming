@@ -37,7 +37,8 @@ class PathFinder:
         path = []
         path_itr = end
 
-        while path_itr != path_itr:
+        # iteration stops when path reaches start point or a point with no parent
+        while path_itr != store.get(path_itr, path_itr):
             if path_itr not in store: break
             path.append(path_itr)
             path_itr = store[path_itr]
