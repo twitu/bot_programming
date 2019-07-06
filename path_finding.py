@@ -43,7 +43,7 @@ class PathFinder:
             path.append(path_itr)
             path_itr = store[path_itr]
 
-        return path.reverse()
+        return reversed(path)
 
     def find_step(*args):
         """
