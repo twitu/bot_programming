@@ -101,7 +101,7 @@ class PathFinder:
         """
 
         queue = priority_queue.PriorityQueue()
-        queue.push(0, start)
+        queue.push(math.inf, start)
         store = {start: start}
 
         while (not queue.is_empty()):
