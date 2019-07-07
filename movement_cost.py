@@ -1,5 +1,4 @@
 import random
-
 import math
 
 
@@ -35,7 +34,7 @@ def euclidean_cost(scale=1):
         scale  (int): scale of one step
 
     Returns:
-        Returns euclidean cost fuction between start and end point
+        Returns euclidean cost function between start and end point
     """
 
     def cost(start, end):

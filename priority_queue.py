@@ -4,7 +4,6 @@ from collections import deque
 
 
 class PriorityQueue:
-
     def __init__(self):
         self.elements = []
 
@@ -22,7 +21,6 @@ class PriorityQueue:
 
 
 class SimpleQueue:
-
     def __init(self):
         self.elements = deque()
 

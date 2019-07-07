@@ -22,6 +22,6 @@ if __name__ == "__main__":
     ]
     cost_func = linear_cost()
     path_finder = PathFinder(linear_cost(), randomized_cost(1, 0.3, cost_func), is_valid_pos)
-    path = path_finder.find_path(moves, start, end)
-    map_generator.view_path(map_data, path)
-
+    path1 = path_finder.find_path(moves, start, end)
+    path2 = path_finder.find_path(moves, start, end)
+    map_generator.view_path(map_data, path1, path2)

@@ -3,7 +3,6 @@ import priority_queue
 
 
 class PathFinder:
-
     def __init__(self, movement_cost, heuristic_cost, is_valid_move):
         """
         Initializes the path finder with relevant functions. Helps reduce the number of
@@ -111,11 +110,12 @@ class PathFinder:
             store: contains the all the states encountered with links to parent states
                 it can be used to generate the path and the next step
         """
+
         def total_cost(cur_pos, next_pos, end):
             return self.movement_cost(cur_pos, next_pos) + self.heuristic_cost(next_pos, end)
 
         queue = priority_queue.PriorityQueue()
-        queue.push((self.heuristic_cost(start,  end), start))
+        queue.push((self.heuristic_cost(start, end), start))
         store = {start: (0, start)}
 
         while not queue.is_empty():

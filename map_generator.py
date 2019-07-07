@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
 import perlin
 
 
@@ -22,7 +21,7 @@ def view_map(map_data, grid=True):
     return
 
 
-def view_path(map_data, path, grid=True, markers=True):
+def view_path(map_data, *args, grid=True, markers=False):
     """View path
     a) map_data:    Boolean numpy array. True for passable, False for impassable.
     b) path:        List[(int, int)]. List of points (x,y) in path from 0(start) to end(stop).
@@ -31,23 +30,32 @@ def view_path(map_data, path, grid=True, markers=True):
     e) color code:  As in view_map; plus green cross for start and red cross for destination.
     """
 
-    start = path[0]
-    end = path[-1]
-    for point in path:
-        plt.plot(point[0], point[1])
-        plt.scatter(point[0], point[1])
-    plt.plot(start[0], start[1], 'gx')
-    plt.plot(end[0], end[1], 'rx')
+    for path in args:
+        if not path:
+            continue
+        start = path[0]
+        end = path[-1]
+        x = []
+        y = []
+        for point in path:
+            x.append(point[0])
+            y.append(point[1])
+        plt.plot(x, y)
+        if markers:
+            plt.scatter(x, y)
+        plt.plot(start[0], start[1], 'gx')
+        plt.plot(end[0], end[1], 'rx')
     view_map(map_data, grid)
     return
 
 
+# noinspection PyTypeChecker
 def generate_map(rows, cols, obstacle_density=0.35, var_index=0.1, seed=0):
     """Generate 2D map
     a) rows, cols:          No. of rows and columns.
     b) obstacle_density:    Percentage of map filled by obstacles. Defaults to 0.35.
     c) var_index:           Variability index. Controls "noisiness" of obstacles. Defaults to 0.1.
-    d) seed:                Seed for rng.
+    d) seed:                Seed for rng. Use 0 for random seed. Defaults to 0.
     e) return value:        Boolean numpy array. True for passable, False for impassable.
     """
 
