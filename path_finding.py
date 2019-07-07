@@ -1,10 +1,10 @@
-import heuristic
 import priority_queue
 import helper
+import math
 
 class PathFinder:
 
-    def __init__(cost_func, is_valid_pos):
+    def __init__(self, cost_func, is_valid_pos):
         """
         Initializes the path finder with relevant functions. Helps reduce the number of
         parameters in a function.
@@ -22,7 +22,7 @@ class PathFinder:
         self.cost_func = cost_func
         self.is_valid_pos = is_valid_pos
 
-    def find_path(*args):
+    def find_path(self, *args):
         """
         Takes start and end point and returns a list of points indicating path in the forward direction
 
@@ -33,9 +33,9 @@ class PathFinder:
             List[(int, int)]: List of points to take to reach end in the forward direction
         """
 
-        store = generic_a_star(*args)
+        store = self.generic_a_star(*args)
         path = []
-        path_itr = end
+        path_itr = args[2]  # 3rd argument contains end point
 
         # iteration stops when path reaches start point or a point with no parent
         while path_itr != store.get(path_itr, path_itr):
@@ -45,7 +45,7 @@ class PathFinder:
 
         return reversed(path)
 
-    def find_step(*args):
+    def find_step(self, *args):
         """
         Takes start and end point and returns next step in the forward direction
 
@@ -58,12 +58,11 @@ class PathFinder:
 
         return find_path(*args)[0]
 
-    def repair_path(map, moves, prev_path, m_steps):
+    def repair_path(self, moves, prev_path, m_steps):
         """
         Takes an existing path and performs repair/recomputation upto m steps ahead
 
         Args:
-            map: 2-D grid map with true and false indicating passable terrain
             moves: list of allowed moves at each point
             prev_path: previously calculated path where head of list indicates current position
             m_steps: number of steps ahead, to repair
@@ -85,12 +84,12 @@ class PathFinder:
             return repaired_path
 
 
-    def generic_a_star(map, moves, start, end):
+    def generic_a_star(self, moves, start, end):
         """
         Performs an a* search on the map with the given set of moves
+        Note: end should be a valid point on the map
 
         Args:
-            map: 2-D grid map with true and false indicating passable terrain
             moves: list of allowed moves at each point
             start: x and y coordinates of start point
             end: x and y coordinates of end point
@@ -105,23 +104,24 @@ class PathFinder:
         store = {start: start}
 
         while (not queue.is_empty()):
-            pos = queue.pop()
-            if pos == end: return store  # return store on reaching end
+            (cur_score, cur_pos) = queue.pop()
+            if cur_pos == end: return store  # return store on reaching end
 
-            next_moves = [helper.add_tuple_elements(pos, move) for move in moves]
-            valid_pos = [(self.cost_func(move), move) for move in next_moves if self.is_valid_pos(move)]
-            valid_moves = [next_pos for next_pos in valid_pos if next_pos[0] <= pos[0]]
-            [store[move[1]] = pos for move in valid_moves if move[1] not in store]
+            next_moves = [helper.add_tuple_elements(cur_pos, move) for move in moves]
+            valid_pos = [(self.cost_func(move, end), move) for move in next_moves if self.is_valid_pos(move)]
+            valid_moves = [(score, pos) for (score, pos) in valid_pos if score <= cur_score]
+            for (_, move) in valid_moves:
+                if move not in store: store[move] = cur_pos
             [queue.push(valid_move) for move in valid_moves]
 
         return {}
 
-    def simple_bfs(map, moves, start, end):
+    def simple_bfs(self, moves, start, end):
         """
         Performs bfs search on the map with the given set of moves
+        Note: end should be a valid point on the map
 
         Args:
-            map: 2-D grid map with true and false indicating passable terrain
             moves: list of allowed moves at each point
             start: x and y coordinates of start point
             end: x and y coordinates of end point
@@ -141,8 +141,7 @@ class PathFinder:
 
             next_moves = [helper.add_tuple_elements(pos, move) for move in moves]
             valid_pos = [move for move in next_moves if self.is_valid_pos(move)]
-            [store[move] = pos for move in valid_moves if move not in store]
-            [queue.push(valid_move) for move in valid_moves]
-
+            for move in valid_moves:
+                if move not in store: store[move] = pos
         return {}
 
