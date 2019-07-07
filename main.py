@@ -1,5 +1,5 @@
 import map_generator
-from movement_cost import linear_cost
+from movement_cost import linear_cost, randomized_cost
 from path_finding import PathFinder
 
 map_data = None
@@ -12,15 +12,16 @@ def is_valid_pos(cur_pos):
 
 if __name__ == "__main__":
     map_data = map_generator.generate_map(100, 100, seed=25)
-    start = (0, 0)
-    end = (99, 99)
+    start = (59, 45)
+    end = (86, 40)
     moves = [
         (0, 1),
         (1, 0),
         (0, -1),
         (-1, 0)
     ]
-    path_finder = PathFinder(linear_cost(), linear_cost(), is_valid_pos)
+    cost_func = linear_cost()
+    path_finder = PathFinder(linear_cost(), randomized_cost(1, 0.3, cost_func), is_valid_pos)
     path = path_finder.find_path(moves, start, end)
     map_generator.view_path(map_data, path)
 

@@ -23,6 +23,7 @@ def linear_cost(scale=1):
 
     return cost
 
+
 def euclidean_cost(scale=1):
     """
     Euclidean distance, linear and diagonal movement is allowed,
@@ -86,6 +87,7 @@ def scaled_cost(h_func, p_scale):
         return h_func(start, end) * p_scale
 
     return cost
+
 
 def randomized_cost(sigma, mu, h_func):
     """
