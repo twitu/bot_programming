@@ -20,7 +20,7 @@ if __name__ == "__main__":
         (0, -1),
         (-1, 0)
     ]
-    path_finder = PathFinder(linear_cost, cost, is_valid_pos)
+    path_finder = PathFinder(linear_cost(), linear_cost(), is_valid_pos)
     path = path_finder.find_path(moves, start, end)
     map_generator.view_path(map_data, path)
 
