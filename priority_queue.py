@@ -2,13 +2,14 @@ import heapq
 
 from collections import deque
 
+
 class PriorityQueue:
 
     def __init__(self):
         self.elements = []
 
-    def push(self, score, element):
-        heapq.heappush(self.elements, (score, element))
+    def push(self, state):  # Note: the first element of the state must contain its score
+        heapq.heappush(self.elements, state)
 
     def pop(self):
         return heapq.heappop(self.elements)
@@ -18,6 +19,7 @@ class PriorityQueue:
 
     def is_empty(self):
         return len(self.elements) == 0
+
 
 class SimpleQueue:
 
@@ -32,4 +34,3 @@ class SimpleQueue:
 
     def is_empty(self):
         return len(self.elements) == 0
-

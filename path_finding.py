@@ -1,26 +1,27 @@
-import priority_queue
 import helper
-import math
+import priority_queue
+
 
 class PathFinder:
 
-    def __init__(self, cost_func, is_valid_pos):
+    def __init__(self, movement_cost, heuristic_cost, is_valid_move):
         """
         Initializes the path finder with relevant functions. Helps reduce the number of
         parameters in a function.
 
         Args:
-            cost_func: cost function ideally expected to be a sum of g(n) and h(n) to
-                use the harness the effectiveness of a* algorithm
-            is_valid_pos: takes a point and returns whether it is a valid position or not,
+            movement_cost: real movement cost, logically equivalent to h(n)
+            heuristic_cost: assumed movement cost, logically equivalent to g(n)
+            is_valid_move: takes a point and returns whether it is a valid position or not,
                 and is used in the a* algorithm to element potential points
 
         Return:
             List[(int, int)]: List of points to take to reach end in the forward direction
         """
 
-        self.cost_func = cost_func
-        self.is_valid_pos = is_valid_pos
+        self.movement_cost = movement_cost
+        self.heuristic_cost = heuristic_cost
+        self.is_valid_move = is_valid_move
 
     def find_path(self, *args):
         """
@@ -34,16 +35,23 @@ class PathFinder:
         """
 
         store = self.generic_a_star(*args)
+        if not store:  # if store is empty return empty path
+            return []
+
         path = []
         path_itr = args[2]  # 3rd argument contains end point
 
         # iteration stops when path reaches start point or a point with no parent
-        while path_itr != store.get(path_itr, path_itr):
-            if path_itr not in store: break
-            path.append(path_itr)
-            path_itr = store[path_itr]
+        while path_itr in store:
+            (_, parent) = store[path_itr]
 
-        return reversed(path)
+            if path_itr == parent:
+                break
+            else:
+                path.append(path_itr)
+                path_itr = parent
+
+        return list(reversed(path))
 
     def find_step(self, *args):
         """
@@ -56,7 +64,7 @@ class PathFinder:
             (int, int): List of points to take to reach end in the forward direction
         """
 
-        return find_path(*args)[0]
+        return self.find_path(*args)[0]
 
     def repair_path(self, moves, prev_path, m_steps):
         """
@@ -75,7 +83,7 @@ class PathFinder:
         end_index = m_steps if m_steps < len(prev_path) else -1
         end = prev_path[end_index]
 
-        repaired_path = find_path(map, moves, start, end)
+        repaired_path = self.find_path(moves, start, end)
 
         # extend path when end point is not same as end of previous path
         if end_index != -1:
@@ -83,10 +91,15 @@ class PathFinder:
         else:
             return repaired_path
 
-
     def generic_a_star(self, moves, start, end):
         """
         Performs an a* search on the map with the given set of moves
+        queue implementation stores the state which consists of
+        current position and estimated cost to end point. Based on
+        the estimated cost the queue is sorted. The store is indexed
+        on position and stores actual cost of reaching the point
+        along with parent point.
+
         Note: end should be a valid point on the map
 
         Args:
@@ -98,50 +111,27 @@ class PathFinder:
             store: contains the all the states encountered with links to parent states
                 it can be used to generate the path and the next step
         """
+        def total_cost(cur_pos, next_pos, end):
+            return self.movement_cost(cur_pos, next_pos) + self.heuristic_cost(next_pos, end)
 
         queue = priority_queue.PriorityQueue()
-        queue.push(math.inf, start)
-        store = {start: start}
+        queue.push((self.heuristic_cost(start,  end), start))
+        store = {start: (0, start)}
 
-        while (not queue.is_empty()):
-            (cur_score, cur_pos) = queue.pop()
-            if cur_pos == end: return store  # return store on reaching end
+        while not queue.is_empty():
+            (_, cur_pos) = queue.pop()
+            (cur_score, _) = store[cur_pos]
+            if cur_pos == end:
+                return store  # return store on reaching end
 
             next_moves = [helper.add_tuple_elements(cur_pos, move) for move in moves]
-            valid_pos = [(self.cost_func(move, end), move) for move in next_moves if self.is_valid_pos(move)]
-            valid_moves = [(score, pos) for (score, pos) in valid_pos if score <= cur_score]
-            for (_, move) in valid_moves:
-                if move not in store: store[move] = cur_pos
-            [queue.push(valid_move) for move in valid_moves]
+            valid_moves = [move for move in next_moves if self.is_valid_move(move)]
+            possible_state = [(total_cost(cur_pos, move, end), move) for move in valid_moves]
+            valid_state = [(next_score, next_pos) for (next_score, next_pos) in possible_state
+                           if next_score <= cur_score + self.heuristic_cost(cur_pos, end)]
+            update_state = [state for state in valid_state if state[1] not in store]
+            for (next_score, next_pos) in update_state:
+                store[next_pos] = (cur_score + self.movement_cost(cur_pos, next_pos), cur_pos)
+                queue.push((next_score, next_pos))
 
         return {}
-
-    def simple_bfs(self, moves, start, end):
-        """
-        Performs bfs search on the map with the given set of moves
-        Note: end should be a valid point on the map
-
-        Args:
-            moves: list of allowed moves at each point
-            start: x and y coordinates of start point
-            end: x and y coordinates of end point
-
-        Returns:
-            store: contains the all the states encountered with links to parent states
-                it can be used to generate the path and the next step
-        """
-
-        queue = priority_queue.SimpleQueue()
-        queue.push(start)
-        store = {start: start}
-
-        while (not queue.is_empty()):
-            pos = queue.pop()
-            if pos == end: return store  # return store on reaching end
-
-            next_moves = [helper.add_tuple_elements(pos, move) for move in moves]
-            valid_pos = [move for move in next_moves if self.is_valid_pos(move)]
-            for move in valid_moves:
-                if move not in store: store[move] = pos
-        return {}
-

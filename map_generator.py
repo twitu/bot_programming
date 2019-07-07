@@ -1,9 +1,10 @@
-import perlin
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-def view_map(map_data, grid = True):
+import perlin
 
+
+def view_map(map_data, grid=True):
     """View map
     a) map_data:    Boolean numpy array. True for passable, False for impassable.
     b) grid:        Display grid. Defaults to True.
@@ -20,8 +21,8 @@ def view_map(map_data, grid = True):
     plt.show()
     return
 
-def view_path(map_data, path, grid = True, markers = True):
 
+def view_path(map_data, path, grid=True, markers=True):
     """View path
     a) map_data:    Boolean numpy array. True for passable, False for impassable.
     b) path:        List[(int, int)]. List of points (x,y) in path from 0(start) to end(stop).
@@ -30,17 +31,18 @@ def view_path(map_data, path, grid = True, markers = True):
     e) color code:  As in view_map; plus green cross for start and red cross for destination.
     """
 
-    x, y = zip(*path)
-    plt.plot(x, y)
-    plt.plot(x[0], y[0], 'gx')
-    plt.plot(x[-1], y[-1], 'rx')
-    if markers:
-        plt.scatter(x, y)
+    start = path[0]
+    end = path[-1]
+    for point in path:
+        plt.plot(point[0], point[1])
+        plt.scatter(point[0], point[1])
+    plt.plot(start[0], start[1], 'gx')
+    plt.plot(end[0], end[1], 'rx')
     view_map(map_data, grid)
     return
 
-def generate_map(rows, cols, obstacle_density = 0.35, var_index = 0.1, seed = 0):
 
+def generate_map(rows, cols, obstacle_density=0.35, var_index=0.1, seed=0):
     """Generate 2D map
     a) rows, cols:          No. of rows and columns.
     b) obstacle_density:    Percentage of map filled by obstacles. Defaults to 0.35.
@@ -49,12 +51,13 @@ def generate_map(rows, cols, obstacle_density = 0.35, var_index = 0.1, seed = 0)
     e) return value:        Boolean numpy array. True for passable, False for impassable.
     """
 
-    y = np.linspace(0, cols*var_index, cols, endpoint = False)
-    x = np.linspace(0, rows*var_index, rows, endpoint = False)
+    y = np.linspace(0, cols * var_index, cols, endpoint=False)
+    x = np.linspace(0, rows * var_index, rows, endpoint=False)
     x, y = np.meshgrid(x, y)
-    map_data = perlin.perlin(x, y, seed = seed) + 0.5
+    map_data = perlin.perlin(x, y, seed=seed) + 0.5
     map_data = np.array(map_data > obstacle_density)
     return map_data
+
 
 def mouse_move(event):
     """Show coordinates of selected point"""
