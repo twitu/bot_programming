@@ -14,7 +14,7 @@ def view_map(map_data, grid=True):
     m, n = map_data.shape
     plt.imshow(map_data)
     plt.xticks(np.arange(0.5, n, 1.0), [])
-    plt.yticks(np.arange(0.5, m, 1.0), [])
+    plt.yticks(np.arange(-0.5, m, 1.0), [])
     plt.grid(grid)
     plt.connect('button_press_event', mouse_move)
     plt.show()
@@ -71,6 +71,6 @@ def mouse_move(event):
     """Show coordinates of selected point"""
     if event.xdata is None or event.ydata is None:
         return
-    x, y = int(event.xdata), int(event.ydata)
+    x, y = int(round(event.xdata)), int(round(event.ydata))
     print(x, y)
     return
