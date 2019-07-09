@@ -21,30 +21,29 @@ def view_map(map_data, grid=True):
     return
 
 
-def view_path(map_data, *args, grid=True, markers=False):
+def view_path(map_data, path, store={}, grid=True, markers=False):
     """View path
     a) map_data:    Boolean numpy array. True for passable, False for impassable.
     b) path:        List[(int, int)]. List of points (x,y) in path from 0(start) to end(stop).
     c) grid:        Display grid. Defaults to True.
     d) markers:     Display bullet markers for points in path. Defaults to True.
-    e) color code:  As in view_map; plus green cross for start and red cross for destination.
+    e) store:       Optionally pass store of points to print all points that were checked
+                    while finding the correct path
     """
 
-    for path in args:
-        if not path:
-            continue
-        start = path[0]
-        end = path[-1]
-        x = []
-        y = []
-        for point in path:
-            x.append(point[0])
-            y.append(point[1])
-        plt.plot(x, y)
-        if markers:
-            plt.scatter(x, y)
-        plt.plot(start[0], start[1], 'gx')
-        plt.plot(end[0], end[1], 'rx')
+    # plot all the points in the store
+    if store:
+        x, y = tuple(zip(*store.keys()))
+        plt.scatter(x, y, color='orange')
+    # plot all the points in the path
+    start = path[0]
+    end = path[-1]
+    x, y = tuple(zip(*path))
+    plt.plot(x, y, color='blue')
+    if markers:
+        plt.scatter(x, y)
+    plt.plot(start[0], start[1], 'gx')
+    plt.plot(end[0], end[1], 'rx')
     view_map(map_data, grid)
     return
 

@@ -52,6 +52,40 @@ class PathFinder:
 
         return list(reversed(path))
 
+
+    def find_path_return_store(self, *args):
+        """
+        Takes start and end point and returns a list of points indicating path in the forward direction
+        and returns store containing points that were evaluated
+
+        Args:
+            *args: arguments required by generic_a_star function
+
+        Return:
+            List[(int, int)]: List of points to take to reach end in the forward direction
+            Dictionary{point: (score, parent)}: Dictionary containing all points that were evaluated
+        """
+
+        store = self.generic_a_star(*args)
+        if not store:  # if store is empty return empty path
+            return []
+
+        path = []
+        path_itr = args[2]  # 3rd argument contains end point
+
+        # iteration stops when path reaches start point or a point with no parent
+        while path_itr in store:
+            (_, parent) = store[path_itr]
+
+            if path_itr == parent:
+                break
+            else:
+                path.append(path_itr)
+                path_itr = parent
+
+        return (list(reversed(path)), store)
+
+
     def find_step(self, *args):
         """
         Takes start and end point and returns next step in the forward direction
