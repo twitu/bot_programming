@@ -68,7 +68,7 @@ class PathFinder:
 
         store = self.generic_a_star(*args)
         if not store:  # if store is empty return empty path
-            return []
+            return [], {}
 
         path = []
         path_itr = args[2]  # 3rd argument contains end point
@@ -83,7 +83,7 @@ class PathFinder:
                 path.append(path_itr)
                 path_itr = parent
 
-        return (list(reversed(path)), store)
+        return list(reversed(path)), store
 
 
     def find_step(self, *args):

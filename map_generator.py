@@ -21,7 +21,7 @@ def view_map(map_data, grid=True):
     return
 
 
-def view_path(map_data, path, store={}, grid=True, markers=False):
+def view_path(map_data, path, store=None, grid=True, markers=False):
     """View path
     a) map_data:    Boolean numpy array. True for passable, False for impassable.
     b) path:        List[(int, int)]. List of points (x,y) in path from 0(start) to end(stop).
@@ -36,15 +36,18 @@ def view_path(map_data, path, store={}, grid=True, markers=False):
         x, y = tuple(zip(*store.keys()))
         plt.scatter(x, y, color='orange')
     # plot all the points in the path
-    start = path[0]
-    end = path[-1]
-    x, y = tuple(zip(*path))
-    plt.plot(x, y, color='blue')
-    if markers:
-        plt.scatter(x, y)
-    plt.plot(start[0], start[1], 'gx')
-    plt.plot(end[0], end[1], 'rx')
-    view_map(map_data, grid)
+    if path:
+        start = path[0]
+        end = path[-1]
+        x, y = tuple(zip(*path))
+        plt.plot(x, y, color='blue')
+        if markers:
+            plt.scatter(x, y, color='green')
+        plt.plot(start[0], start[1], 'gx')
+        plt.plot(end[0], end[1], 'rx')
+        view_map(map_data, grid)
+    else:
+        print("Empty path")
     return
 
 

@@ -1,4 +1,5 @@
 import map_generator
+import potential
 from movement_cost import linear_cost, randomized_cost
 from path_finding import PathFinder
 
@@ -24,4 +25,4 @@ if __name__ == "__main__":
     path_finder = PathFinder(linear_cost(), randomized_cost(1, 0.2, cost_func), is_valid_pos)
     path, store = path_finder.find_path_return_store(moves, start, end)
     map_generator.view_path(map_data, path, store)
-
+    potential.view_potential(potential.obstacle(map_data))
