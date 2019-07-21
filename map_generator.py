@@ -10,7 +10,6 @@ def view_map(map_data, grid=True):
     c) color code:  yellow for passable(1), purple for impassable(0).
     d) coordinates: click anywhere on the map to view coordinates of that point.
     """
-
     m, n = map_data.shape
     plt.imshow(map_data)
     plt.xticks(np.arange(0.5, n, 1.0), [])
@@ -30,7 +29,6 @@ def view_path(map_data, path, store=None, grid=True, markers=False):
     e) store:       Optionally pass store of points to print all points that were checked
                     while finding the correct path
     """
-
     # plot all the points in the store
     if store:
         x, y = tuple(zip(*store.keys()))
@@ -60,7 +58,6 @@ def generate_map(rows, cols, obstacle_density=0.35, var_index=0.1, seed=0):
     d) seed:                Seed for rng. Use 0 for random seed. Defaults to 0.
     e) return value:        Boolean numpy array. True for passable, False for impassable.
     """
-
     y = np.linspace(0, cols * var_index, cols, endpoint=False)
     x = np.linspace(0, rows * var_index, rows, endpoint=False)
     x, y = np.meshgrid(x, y)

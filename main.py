@@ -1,5 +1,7 @@
 import map_generator
 import potential
+import zone
+import numpy as np
 from movement_cost import linear_cost, randomized_cost
 from path_finding import PathFinder
 
@@ -12,7 +14,7 @@ def is_valid_pos(cur_pos):
 
 
 if __name__ == "__main__":
-    map_data = map_generator.generate_map(100, 100, seed=25)
+    map_data = map_generator.generate_map(100, 100, seed=25, obstacle_density=0.35)
     start = (59, 45)
     end = (86, 40)
     moves = [
@@ -25,4 +27,6 @@ if __name__ == "__main__":
     path_finder = PathFinder(linear_cost(), randomized_cost(1, 0.2, cost_func), is_valid_pos)
     path, store = path_finder.find_path_return_store(moves, start, end)
     map_generator.view_path(map_data, path, store)
-    potential.view_potential(potential.obstacle(map_data))
+    potential.view_potential(potential.obstacle(map_data), 'contour')
+    #zone_map = zone.zone_generate(map_data, linear_cost(), zone_size = 10, seed=None)
+    #zone.view_zones(zone_map)
