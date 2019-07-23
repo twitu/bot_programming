@@ -1,6 +1,8 @@
 import helper
 import priority_queue
 
+import itertools
+import functools
 
 class PathFinder:
     def __init__(self, movement_cost, heuristic_cost, is_valid_move):
@@ -22,6 +24,24 @@ class PathFinder:
         self.heuristic_cost = heuristic_cost
         self.is_valid_move = is_valid_move
 
+    @staticmethod
+    def _get_path_from_store(end, store):
+        path = []
+        path_itr = end
+
+        # iteration stops when path reaches start point or a point with no parent
+        while path_itr in store:
+            (_, parent) = store[path_itr]
+
+            if path_itr == parent:
+                break
+            else:
+                path.append(path_itr)
+                path_itr = parent
+
+        path.reverse()
+        return path
+
     def find_path(self, *args, return_store=False):
         """
         Takes start and end point and returns a list of points indicating path in the forward direction
@@ -42,23 +62,51 @@ class PathFinder:
             else:
                 return []
 
-        path = []
-        path_itr = args[2]  # 3rd argument contains end point
-
-        # iteration stops when path reaches start point or a point with no parent
-        while path_itr in store:
-            (_, parent) = store[path_itr]
-
-            if path_itr == parent:
-                break
-            else:
-                path.append(path_itr)
-                path_itr = parent
+        end = args[2]  # 3rd argument contains end point
+        path = PathFinder._get_path_from_store(end, store)
 
         if return_store:
-            return list(reversed(path)), store
+            return path, store
         else:
-            return list(reversed(path))
+            return path
+
+    def find_path_waypoints(self, moves, waypoints, return_store=False):
+        """
+        Takes a list of waypoint and returns a list of points indicating a path passing through all the waypoints in the forward direction
+
+        Args:
+            moves: list of legal next moves
+            waypoints: List of points including start and end point that the path should visit
+            return_store: returns the store as well if set to True
+
+        Return:
+            List (int, int): Returns List of points to take to reach end in the forward direction.
+            Dictionary{point: (score, parent)}: Optional. Dictionary containing all points that were evaluated. Note: for a point visited multiple times, the (score, parent) value will be one of the waypoint segment visited later
+        """
+
+        paths = []
+        stores = []
+        for start, end in helper.pairwise(waypoints):
+            stores.append(self.generic_a_star(moves, start, end))
+            paths.append(PathFinder._get_path_from_store(end, stores[-1]))
+
+        path = []
+        end = waypoints[-1]
+        # if any path is empty, the path cannot be calculated
+        if (all(paths)):
+            for path in paths:
+                path.pop()
+
+            paths[-1].append(end)
+            path = list(itertools.chain.from_iterable(paths))
+
+        if return_store:
+            # lazy merge stores, z = {**x, **y}, common keys
+            # in x and y written over by value of y
+            store = functools.reduce(lambda x, y: {**x, **y}, stores)
+            return path, store
+        else:
+            return path
 
     def find_step(self, *args):
         """

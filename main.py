@@ -4,7 +4,7 @@ import numpy as np
 from movement_cost import linear_cost, randomized_cost
 from path_finding import PathFinder
 from terrain_analysis import TerrainAnalyzer
-
+from next_moves import adjacent_linear
 map_data = None
 
 
@@ -16,17 +16,16 @@ def is_valid_pos(cur_pos):
 if __name__ == "__main__":
     map_data = map_generator.generate_map(100, 100, seed=25, obstacle_density=0.35)
     start = (59, 45)
+    mid = (0, 0)
     end = (86, 40)
-    moves = [
-        (0, 1),
-        (1, 0),
-        (0, -1),
-        (-1, 0)
-    ]
+    waypoints = [start, mid, end]
+    moves = adjacent_linear()
     cost_func = linear_cost()
-    path_finder = PathFinder(linear_cost(), randomized_cost(1, 0.2, cost_func), is_valid_pos)
-    path, store = path_finder.find_path(moves, start, end, return_store=True)
+    path_finder = PathFinder(linear_cost(), linear_cost(), is_valid_pos)
+    path, store = path_finder.find_path_waypoints(moves, waypoints, return_store=True)
+    print(path)
     map_generator.view_path(map_data, path, store)
     potential.view_potential(potential.manhattan(map_data))
     terrainer = TerrainAnalyzer(map_data)
     terrainer.view_terrain(True)
+
