@@ -159,3 +159,26 @@ def bc19_9_radius(randomize=false):
     else:
         return moves
 
+def adjacent_linear_directional(up_down=true):
+    """
+    Return x and y offsets for adjacent moves in
+    one of the linear directions
+
+                         o
+                        #x#
+                         o
+
+    Args:
+        up_down (boolean): returns moves for up down movement
+            or left right movement
+
+    Returns:
+        List (int, int): List of x and y offsets from
+        current position
+    """
+
+    if up_down:
+        return [(0, 1), (0, -1)]
+    else:
+        return [(1, 0), (-1, 0)]
+
