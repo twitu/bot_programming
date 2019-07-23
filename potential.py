@@ -64,15 +64,16 @@ def goalpost(map_size, goal, xi=1 / 700):
     return potn
 
 
-def manhattan(map_data, return_depth_vector=False):
+def manhattan(map_data, max_depth=5, return_depth_vector=False):
     """Generate obstacle field based on Manhattan distance from nearest obstacle.
     a) map_data:                Boolean numpy array. True for passable, False for impassable.
-    b) return_depth_vector:     Boolean value. Do you want an indexed list of points at a given depth?
-    e) primary return value:    Numpy ndarray for potential height.
-    d) optional return value:   Depth vector (list(list(int, int))). Indexed list of points at any given depth.
+    b) max_depth:               Maximum allowed depth for sea floor.
+    c) return_depth_vector:     Boolean value. Do you want an indexed list of points at a given depth?
+    d) primary return value:    Numpy ndarray for potential height.
+    e) optional return value:   Depth vector (list(list(int, int))). Indexed list of points at any given depth.
     """
-    temp_map = map_data*1
-    depth_map = map_data*0
+    temp_map = map_data * 1
+    depth_map = map_data * 0
     current_vector = []
     current_depth = -1
     m, n = map_data.shape
@@ -91,6 +92,8 @@ def manhattan(map_data, return_depth_vector=False):
     depth_vector = [current_vector]
     while len(current_vector) != 0:
         current_depth -= 1
+        if current_depth == -max_depth:
+            break
         new_vector = []
         for point in current_vector:
             nbors = helper.get_neighbors(point, (m, n))
@@ -101,6 +104,15 @@ def manhattan(map_data, return_depth_vector=False):
                     depth_map[p[1]][p[0]] = current_depth
         current_vector = new_vector
         depth_vector.append(current_vector)
+    if len(current_vector) != 0:
+        new_vector = []
+        for y in range(0, m):
+            for x in range(0, n):
+                if depth_map[y][x] == 0 and map_data[y][x]:
+                    depth_map[y][x] = current_depth
+                    new_vector.append((x, y))
+        depth_vector.append(new_vector)
+        depth_map += 1
     depth_map = depth_map - current_depth - 1
     depth_vector.reverse()
     if return_depth_vector:
