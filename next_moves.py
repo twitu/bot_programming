@@ -1,6 +1,6 @@
 import random
 
-def adjacent_linear(randomize=false):
+def adjacent_linear(randomize=False):
     """
     Return x and y offsets for adjacent moves in
     linear directions
@@ -29,7 +29,7 @@ def adjacent_linear(randomize=false):
     else:
         return moves
 
-def adjacent_octile(randomize=false):
+def adjacent_octile(randomize=False):
     """
     Return x and y offsets for adjacent moves in
     octile directions
@@ -62,7 +62,7 @@ def adjacent_octile(randomize=false):
     else:
         return moves
 
-def bc19_4_radius(randomize=false):
+def bc19_4_radius(randomize=False):
     """
     Return x and y offsets for adjacent moves in
     four unit distance of the current position.
@@ -102,7 +102,7 @@ def bc19_4_radius(randomize=false):
         return moves
 
 
-def bc19_9_radius(randomize=false):
+def bc19_9_radius(randomize=False):
     """
     Return x and y offsets for adjacent moves in
     nine unit distance of the current position.
@@ -159,7 +159,7 @@ def bc19_9_radius(randomize=false):
     else:
         return moves
 
-def adjacent_linear_directional(up_down=true):
+def adjacent_linear_directional(up_down=True):
     """
     Return x and y offsets for adjacent moves in
     one of the linear directions
