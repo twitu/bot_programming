@@ -69,9 +69,13 @@ class TerrainAnalyzer:
                             break
                         else:
                             zone_id = self.zone_map[point[1]][point[0]]
-                            self.zone_map[tile[1]][tile[0]] = zone_id
-                            self.zones[zone_id - 1].size += 1
-                            self.zones[zone_id - 1].points.append(tile)
+                if zone_id != 0:
+                    self.zone_map[tile[1]][tile[0]] = zone_id
+                    self.zones[zone_id - 1].points.append(tile)
+        self.zone_map -= 1
+        for Z in self.zones:
+            Z.zone_id -= 1
+            Z.size = len(Z.points)
         return
 
     def flood_sea_floor(self, current, sea_floor):
@@ -82,7 +86,6 @@ class TerrainAnalyzer:
         q = queue.Queue()
         q.put(current)
         self.zone_map[current[1]][current[0]] = self.zone_no
-        self.zones[-1].size += 1
         self.zones[-1].points.append(current)
         sea_floor.remove(current)
         while not q.empty():
@@ -92,7 +95,6 @@ class TerrainAnalyzer:
                 if self.is_valid_sea_floor(point):
                     q.put(point)
                     self.zone_map[point[1]][point[0]] = self.zone_no
-                    self.zones[-1].size += 1
                     self.zones[-1].points.append(point)
                     sea_floor.remove(point)
         return
@@ -117,8 +119,8 @@ class TerrainAnalyzer:
             return
         x, y = int(round(event.xdata)), int(round(event.ydata))
         zone_id = self.zone_map[y][x]
-        if zone_id != 0:
-            print((x, y), "zone ->", zone_id, "size ->", self.zones[zone_id - 1].size)
+        if zone_id != -1:
+            print((x, y), "zone ->", zone_id, "size ->", self.zones[zone_id].size)
         else:
             print((x, y), "impassable terrain")
         return

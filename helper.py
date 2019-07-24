@@ -28,4 +28,3 @@ def get_neighbors(point, map_size):
 
     selected_nbors = [point for point in nbors if is_valid(point)]
     return selected_nbors
-
