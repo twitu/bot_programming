@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import queue
+import next_moves
 from potential import manhattan
-from helper import get_neighbors
+from helper import get_neighbors, get_next_positions
 
 
 class TerrainAnalyzer:
@@ -16,6 +18,7 @@ class TerrainAnalyzer:
         self.max_height = len(self.height_vector)
         self.zone_map = map_data * 0
         self.zone_no = 0
+        self.zone_size = []
         self.gate_points = []
         self.manhattan_flood()
         return
@@ -29,9 +32,12 @@ class TerrainAnalyzer:
         plt.colorbar()
         plt.xticks(np.arange(0.5, self.map_size[1], 1.0), [])
         plt.yticks(np.arange(-0.5, self.map_size[0], 1.0), [])
+        plt.gca().set_xlim([-0.5, self.map_size[1] - 0.5])
+        plt.gca().set_ylim([-0.5, self.map_size[0] - 0.5])
+        plt.gca().invert_yaxis()
         plt.grid(grid)
         plt.connect('button_press_event', self.mouse_move)
-        if gates:
+        if gates and self.gate_points:
             x, y = zip(*self.gate_points)
             plt.scatter(x, y, color='green')
         plt.show()
@@ -43,6 +49,7 @@ class TerrainAnalyzer:
         sea_floor = self.height_vector[0]
         while sea_floor:
             self.zone_no += 1
+            self.zone_size.append(0)
             self.flood_sea_floor(sea_floor[0], sea_floor)
         sea_map = np.array(self.zone_map == 0)
         _, depth_vector = manhattan(sea_map, max_depth=50, return_depth_vector=True)
@@ -52,15 +59,12 @@ class TerrainAnalyzer:
                 if not self.map_data[tile[1]][tile[0]]:
                     continue
                 nbors = get_neighbors(tile, self.map_size)
-                zone_id = 0
                 for point in nbors:
                     if self.zone_map[point[1]][point[0]] != 0:
-                        if zone_id != 0 and zone_id != self.zone_map[point[1]][point[0]]:
-                            self.gate_points.append(tile)
-                            break
-                        else:
-                            zone_id = self.zone_map[point[1]][point[0]]
-                self.zone_map[tile[1]][tile[0]] = zone_id
+                        zone_id = self.zone_map[point[1]][point[0]]
+                        self.zone_map[tile[1]][tile[0]] = zone_id
+                        self.zone_size[zone_id - 1] += 1
+                        break
         return
 
     def flood_sea_floor(self, current, sea_floor):
@@ -68,25 +72,41 @@ class TerrainAnalyzer:
         a) current:         Current point being processed (int, int).
         b) sea_floor:       List of remaining points in sea floor to process. (list((int, int))).
         """
-        x, y = current
-        m, n = self.map_data.shape
-        if x < 0 or x >= n or y < 0 or y >= m:
-            return
-        elif not self.map_data[y][x] or self.zone_map[y][x] == self.zone_no or self.height_map[y][x] != 0:
-            return
-        else:
-            self.zone_map[y][x] = self.zone_no
-            sea_floor.remove(current)
-            self.flood_sea_floor((current[0], current[1] + 1), sea_floor)
-            self.flood_sea_floor((current[0], current[1] - 1), sea_floor)
-            self.flood_sea_floor((current[0] + 1, current[1]), sea_floor)
-            self.flood_sea_floor((current[0] - 1, current[1]), sea_floor)
+        q = queue.Queue()
+        q.put(current)
+        self.zone_map[current[1]][current[0]] = self.zone_no
+        self.zone_size[-1] += 1
+        sea_floor.remove(current)
+        while not q.empty():
+            new_point = q.get()
+            nbors = get_next_positions(new_point, next_moves.adjacent_linear())
+            for point in nbors:
+                if self.is_valid_sea_floor(point):
+                    q.put(point)
+                    self.zone_map[point[1]][point[0]] = self.zone_no
+                    self.zone_size[-1] += 1
+                    sea_floor.remove(point)
         return
+
+    def is_valid_sea_floor(self, point):
+        """Test if a given point is a valid unvisited point on the sea bed
+        a) point:           Point (int, int) to be tested.
+        b) return value:    True/False boolean value.
+        """
+        m, n = self.map_size
+        x, y = point
+        if x < 0 or x >= n or y < 0 or y >= m:
+            return False
+        elif not self.map_data[y][x] or self.zone_map[y][x] == self.zone_no or self.height_map[y][x] != 0:
+            return False
+        else:
+            return True
 
     def mouse_move(self, event):
         """Show coordinates of selected point"""
         if event.xdata is None or event.ydata is None:
             return
         x, y = int(round(event.xdata)), int(round(event.ydata))
-        print((x, y), self.zone_map[y][x])
+        zone_id = self.zone_map[y][x]
+        print((x, y), "zone ->", zone_id, "size ->", self.zone_size[zone_id - 1])
         return

@@ -27,5 +27,5 @@ if __name__ == "__main__":
     map_generator.view_path(map_data, path, store)
     potential.view_potential(potential.manhattan(map_data))
     terrainer = TerrainAnalyzer(map_data)
-    terrainer.view_terrain(True)
+    terrainer.view_terrain()
 
