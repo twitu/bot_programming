@@ -65,7 +65,10 @@ class TerrainAnalyzer:
                 for point in nbors:
                     if self.zone_map[point[1]][point[0]] != 0:
                         if zone_id != 0 and self.zone_map[point[1]][point[0]] != zone_id:
+                            nbor_id = self.zone_map[point[1]][point[0]]
                             self.gate_points.append(tile)
+                            self.zones[zone_id - 1].add_gate_point(nbor_id - 1, tile)
+                            self.zones[nbor_id - 1].add_gate_point(zone_id - 1, tile)
                             break
                         else:
                             zone_id = self.zone_map[point[1]][point[0]]
@@ -76,6 +79,8 @@ class TerrainAnalyzer:
         for Z in self.zones:
             Z.zone_id -= 1
             Z.size = len(Z.points)
+            Z.update_center()
+            print(Z.entry_points)
         return
 
     def flood_sea_floor(self, current, sea_floor):
