@@ -8,11 +8,10 @@ from helper import get_neighbors, get_next_positions
 
 
 class TerrainAnalyzer:
-    def __init__(self, map_data, choke_width=5, min_zone_size=150):
+    def __init__(self, map_data, choke_width=5):
         """Create and initialize Terrain Analyzer.
         a) map_data:        Boolean numpy array. True for passable, False for impassable.
         b) choke_width:     Parameter. Width of choke point.
-        c) min_zone_size:   Minimum no. of squares in a zone.
         """
         self.map_data = map_data
         self.map_size = map_data.shape
@@ -42,6 +41,7 @@ class TerrainAnalyzer:
         if gates and self.gate_points:
             x, y = zip(*self.gate_points)
             plt.scatter(x, y, color='green')
+        print(self.zone_no, "zones found")
         plt.show()
         return
 
@@ -61,13 +61,17 @@ class TerrainAnalyzer:
                 if not self.map_data[tile[1]][tile[0]]:
                     continue
                 nbors = get_neighbors(tile, self.map_size)
+                zone_id = 0
                 for point in nbors:
                     if self.zone_map[point[1]][point[0]] != 0:
-                        zone_id = self.zone_map[point[1]][point[0]]
-                        self.zone_map[tile[1]][tile[0]] = zone_id
-                        self.zones[zone_id - 1].size += 1
-                        self.zones[zone_id - 1].points.append(tile)
-                        break
+                        if zone_id != 0 and self.zone_map[point[1]][point[0]] != zone_id:
+                            self.gate_points.append(tile)
+                            break
+                        else:
+                            zone_id = self.zone_map[point[1]][point[0]]
+                            self.zone_map[tile[1]][tile[0]] = zone_id
+                            self.zones[zone_id - 1].size += 1
+                            self.zones[zone_id - 1].points.append(tile)
         return
 
     def flood_sea_floor(self, current, sea_floor):
@@ -83,7 +87,7 @@ class TerrainAnalyzer:
         sea_floor.remove(current)
         while not q.empty():
             new_point = q.get()
-            nbors = get_next_positions(new_point, next_moves.adjacent_linear())
+            nbors = get_next_positions(new_point, next_moves.adjacent_octile())
             for point in nbors:
                 if self.is_valid_sea_floor(point):
                     q.put(point)
