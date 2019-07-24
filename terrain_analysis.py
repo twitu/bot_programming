@@ -2,15 +2,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import queue
 import next_moves
+import zone
 from potential import manhattan
 from helper import get_neighbors, get_next_positions
 
 
 class TerrainAnalyzer:
-    def __init__(self, map_data, choke_width=5):
+    def __init__(self, map_data, choke_width=5, min_zone_size=150):
         """Create and initialize Terrain Analyzer.
         a) map_data:        Boolean numpy array. True for passable, False for impassable.
         b) choke_width:     Parameter. Width of choke point.
+        c) min_zone_size:   Minimum no. of squares in a zone.
         """
         self.map_data = map_data
         self.map_size = map_data.shape
@@ -18,7 +20,7 @@ class TerrainAnalyzer:
         self.max_height = len(self.height_vector)
         self.zone_map = map_data * 0
         self.zone_no = 0
-        self.zone_size = []
+        self.zones = []
         self.gate_points = []
         self.manhattan_flood()
         return
@@ -49,7 +51,7 @@ class TerrainAnalyzer:
         sea_floor = self.height_vector[0]
         while sea_floor:
             self.zone_no += 1
-            self.zone_size.append(0)
+            self.zones.append(zone.Zone(self.zone_no))
             self.flood_sea_floor(sea_floor[0], sea_floor)
         sea_map = np.array(self.zone_map == 0)
         _, depth_vector = manhattan(sea_map, max_depth=50, return_depth_vector=True)
@@ -63,7 +65,8 @@ class TerrainAnalyzer:
                     if self.zone_map[point[1]][point[0]] != 0:
                         zone_id = self.zone_map[point[1]][point[0]]
                         self.zone_map[tile[1]][tile[0]] = zone_id
-                        self.zone_size[zone_id - 1] += 1
+                        self.zones[zone_id - 1].size += 1
+                        self.zones[zone_id - 1].points.append(tile)
                         break
         return
 
@@ -75,7 +78,8 @@ class TerrainAnalyzer:
         q = queue.Queue()
         q.put(current)
         self.zone_map[current[1]][current[0]] = self.zone_no
-        self.zone_size[-1] += 1
+        self.zones[-1].size += 1
+        self.zones[-1].points.append(current)
         sea_floor.remove(current)
         while not q.empty():
             new_point = q.get()
@@ -84,7 +88,8 @@ class TerrainAnalyzer:
                 if self.is_valid_sea_floor(point):
                     q.put(point)
                     self.zone_map[point[1]][point[0]] = self.zone_no
-                    self.zone_size[-1] += 1
+                    self.zones[-1].size += 1
+                    self.zones[-1].points.append(point)
                     sea_floor.remove(point)
         return
 
@@ -108,5 +113,8 @@ class TerrainAnalyzer:
             return
         x, y = int(round(event.xdata)), int(round(event.ydata))
         zone_id = self.zone_map[y][x]
-        print((x, y), "zone ->", zone_id, "size ->", self.zone_size[zone_id - 1])
+        if zone_id != 0:
+            print((x, y), "zone ->", zone_id, "size ->", self.zones[zone_id - 1].size)
+        else:
+            print((x, y), "impassable terrain")
         return
