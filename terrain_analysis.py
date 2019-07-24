@@ -17,8 +17,8 @@ class TerrainAnalyzer:
         self.map_size = map_data.shape
         self.height_map, self.height_vector = manhattan(map_data, max_depth=choke_width, return_depth_vector=True)
         self.max_height = len(self.height_vector)
-        self.zone_map = map_data * 0
-        self.zone_no = 0
+        self.zone_map = map_data * 0 - 1
+        self.zone_no = -1
         self.zones = []
         self.gate_points = []
         self.manhattan_flood()
@@ -53,7 +53,7 @@ class TerrainAnalyzer:
             self.zone_no += 1
             self.zones.append(zone.Zone(self.zone_no))
             self.flood_sea_floor(sea_floor[0], sea_floor)
-        sea_map = np.array(self.zone_map == 0)
+        sea_map = np.array(self.zone_map == -1)
         _, depth_vector = manhattan(sea_map, max_depth=50, return_depth_vector=True)
         depth = len(depth_vector)
         for i in reversed(range(0, depth)):
@@ -61,26 +61,24 @@ class TerrainAnalyzer:
                 if not self.map_data[tile[1]][tile[0]]:
                     continue
                 nbors = get_neighbors(tile, self.map_size)
-                zone_id = 0
+                zone_id = -1
                 for point in nbors:
-                    if self.zone_map[point[1]][point[0]] != 0:
-                        if zone_id != 0 and self.zone_map[point[1]][point[0]] != zone_id:
+                    if self.zone_map[point[1]][point[0]] != -1:
+                        if zone_id != -1 and self.zone_map[point[1]][point[0]] != zone_id:
                             nbor_id = self.zone_map[point[1]][point[0]]
                             self.gate_points.append(tile)
-                            self.zones[zone_id - 1].add_gate_point(nbor_id - 1, tile)
-                            self.zones[nbor_id - 1].add_gate_point(zone_id - 1, tile)
+                            self.zones[zone_id].add_gate_point(nbor_id, tile)
+                            self.zones[nbor_id].add_gate_point(zone_id, tile)
                             break
                         else:
                             zone_id = self.zone_map[point[1]][point[0]]
-                if zone_id != 0:
+                if zone_id != -1:
                     self.zone_map[tile[1]][tile[0]] = zone_id
-                    self.zones[zone_id - 1].points.append(tile)
-        self.zone_map -= 1
+                    self.zones[zone_id].points.append(tile)
+        self.zone_no += 1
         for Z in self.zones:
-            Z.zone_id -= 1
             Z.size = len(Z.points)
             Z.update_center()
-            print(Z.entry_points)
         return
 
     def flood_sea_floor(self, current, sea_floor):
