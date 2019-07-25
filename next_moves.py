@@ -1,5 +1,6 @@
 import random
 
+
 def adjacent_linear(randomize=False):
     """
     Return x and y offsets for adjacent moves in
@@ -28,6 +29,7 @@ def adjacent_linear(randomize=False):
         return random.shuffle(moves)
     else:
         return moves
+
 
 def adjacent_octile(randomize=False):
     """
@@ -61,6 +63,7 @@ def adjacent_octile(randomize=False):
         return random.shuffle(moves)
     else:
         return moves
+
 
 def bc19_4_radius(randomize=False):
     """
@@ -159,6 +162,7 @@ def bc19_9_radius(randomize=False):
     else:
         return moves
 
+
 def adjacent_linear_directional(up_down=True):
     """
     Return x and y offsets for adjacent moves in
@@ -181,4 +185,3 @@ def adjacent_linear_directional(up_down=True):
         return [(0, 1), (0, -1)]
     else:
         return [(1, 0), (-1, 0)]
-

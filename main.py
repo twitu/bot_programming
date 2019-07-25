@@ -5,6 +5,7 @@ from movement_cost import linear_cost, randomized_cost
 from path_finding import PathFinder
 from terrain_analysis import TerrainAnalyzer
 from next_moves import adjacent_linear
+from timeit import default_timer as timer
 
 map_data = None
 
@@ -22,10 +23,16 @@ if __name__ == "__main__":
     waypoints = [start, mid, end]
     moves = adjacent_linear()
     cost_func = linear_cost()
+    start = timer()
     path_finder = PathFinder(linear_cost(), linear_cost(), is_valid_pos)
     path, store = path_finder.find_path_waypoints(moves, waypoints, return_store=True)
+    print(timer() - start)
     map_generator.view_path(map_data, path, store)
+    start = timer()
     potn = potential.manhattan(map_data)
+    print(timer() - start)
     potential.view_potential(potn)
+    start = timer()
     terrainer = TerrainAnalyzer(map_data)
+    print(timer() - start)
     terrainer.view_terrain(True)

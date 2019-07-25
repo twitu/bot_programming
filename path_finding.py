@@ -4,6 +4,7 @@ import priority_queue
 import itertools
 import functools
 
+
 class PathFinder:
     def __init__(self, movement_cost, heuristic_cost, is_valid_move):
         """
@@ -72,16 +73,17 @@ class PathFinder:
 
     def find_path_waypoints(self, moves, waypoints, return_store=False):
         """
-        Takes a list of waypoint and returns a list of points indicating a path passing through all the waypoints in the forward direction
+        Takes a list of waypoint and returns a list of points indicating a path passing through all the waypoints in
+        the forward direction
 
         Args:
             moves: list of legal next moves
             waypoints: List of points including start and end point that the path should visit
             return_store: returns the store as well if set to True
 
-        Return:
-            List (int, int): Returns List of points to take to reach end in the forward direction.
-            Dictionary{point: (score, parent)}: Optional. Dictionary containing all points that were evaluated. Note: for a point visited multiple times, the (score, parent) value will be one of the waypoint segment visited later
+        Return: List (int, int): Returns List of points to take to reach end in the forward direction. Dictionary{
+        point: (score, parent)}: Optional. Dictionary containing all points that were evaluated. Note: for a point
+        visited multiple times, the (score, parent) value will be one of the waypoint segment visited later
         """
 
         paths = []
