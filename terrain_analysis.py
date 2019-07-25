@@ -48,11 +48,12 @@ class TerrainAnalyzer:
     # noinspection PyTypeChecker
     def manhattan_flood(self):
         """Perform water level decomposition to split zones."""
-        sea_floor = self.height_vector[0]
-        while sea_floor:
-            self.zone_no += 1
-            self.zones.append(zone.Zone(self.zone_no))
-            self.flood_sea_floor(sea_floor[0], sea_floor)
+        for i in range(0, len(self.height_vector[0])):
+            x, y = self.height_vector[0][i]
+            if self.zone_map[y][x] == -1:
+                self.zone_no += 1
+                self.zones.append(zone.Zone(self.zone_no))
+                self.flood_sea_floor((x, y))
         sea_map = np.array(self.zone_map == -1)
         _, depth_vector = manhattan(sea_map, max_depth=50, return_depth_vector=True)
         depth = len(depth_vector)
@@ -81,16 +82,14 @@ class TerrainAnalyzer:
             Z.update_center()
         return
 
-    def flood_sea_floor(self, current, sea_floor):
+    def flood_sea_floor(self, current):
         """Recursively flood fill a given region in the sea floor with a given zone id.
         a) current:         Current point being processed (int, int).
-        b) sea_floor:       List of remaining points in sea floor to process. (list((int, int))).
         """
         q = queue.Queue()
         q.put(current)
         self.zone_map[current[1]][current[0]] = self.zone_no
         self.zones[-1].points.append(current)
-        sea_floor.remove(current)
         while not q.empty():
             new_point = q.get()
             nbors = get_next_positions(new_point, next_moves.adjacent_octile())
@@ -99,7 +98,6 @@ class TerrainAnalyzer:
                     q.put(point)
                     self.zone_map[point[1]][point[0]] = self.zone_no
                     self.zones[-1].points.append(point)
-                    sea_floor.remove(point)
         return
 
     def is_valid_sea_floor(self, point):

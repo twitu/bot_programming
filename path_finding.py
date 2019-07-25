@@ -93,7 +93,7 @@ class PathFinder:
         path = []
         end = waypoints[-1]
         # if any path is empty, the path cannot be calculated
-        if (all(paths)):
+        if all(paths):
             for path in paths:
                 path.pop()
 

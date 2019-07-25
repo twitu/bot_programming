@@ -5,6 +5,7 @@ from movement_cost import linear_cost, randomized_cost
 from path_finding import PathFinder
 from terrain_analysis import TerrainAnalyzer
 from next_moves import adjacent_linear
+
 map_data = None
 
 
@@ -23,8 +24,8 @@ if __name__ == "__main__":
     cost_func = linear_cost()
     path_finder = PathFinder(linear_cost(), linear_cost(), is_valid_pos)
     path, store = path_finder.find_path_waypoints(moves, waypoints, return_store=True)
-    print(path)
     map_generator.view_path(map_data, path, store)
-    potential.view_potential(potential.manhattan(map_data))
+    potn = potential.manhattan(map_data)
+    potential.view_potential(potn)
     terrainer = TerrainAnalyzer(map_data)
     terrainer.view_terrain(True)
