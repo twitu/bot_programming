@@ -55,8 +55,10 @@ class TerrainAnalyzer:
                 self.zones.append(zone.Zone(self.zone_no))
                 self.flood_sea_floor((x, y))
         sea_map = np.array(self.zone_map == -1)
-        for i in range(0, self.max_height):
-            for tile in self.height_vector[i]:
+        _, depth_vector = manhattan(sea_map, max_depth=50, return_depth_vector=True)
+        depth = len(depth_vector)
+        for i in reversed(range(0, depth)):
+            for tile in depth_vector[i]:
                 if not self.map_data[tile[1]][tile[0]]:
                     continue
                 nbors = get_neighbors(tile, self.map_size)
