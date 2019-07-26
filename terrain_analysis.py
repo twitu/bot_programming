@@ -4,7 +4,7 @@ import queue
 import next_moves
 import zone
 from potential import manhattan
-from helper import get_neighbors, get_next_positions
+from helper import get_neighbors
 
 
 class TerrainAnalyzer:
@@ -42,49 +42,52 @@ class TerrainAnalyzer:
             x, y = zip(*self.gate_points)
             plt.scatter(x, y, color='green')
         print(self.zone_no, "zones found")
+        x, y = zip(*[Z.center for Z in self.zones])
+        plt.scatter(x, y, edgecolors='white', color='red')
         plt.show()
         return
 
     # noinspection PyTypeChecker
     def manhattan_flood(self):
         """Perform water level decomposition to split zones."""
+        wavefront = queue.Queue()
         for i in range(0, len(self.height_vector[0])):
             x, y = self.height_vector[0][i]
             if self.zone_map[y][x] == -1:
                 self.zone_no += 1
                 self.zones.append(zone.Zone(self.zone_no))
-                self.flood_sea_floor((x, y))
-        sea_map = np.array(self.zone_map == -1)
-        _, depth_vector = manhattan(sea_map, max_depth=50, return_depth_vector=True)
-        depth = len(depth_vector)
-        for i in reversed(range(0, depth)):
-            for tile in depth_vector[i]:
-                if not self.map_data[tile[1]][tile[0]]:
-                    continue
-                nbors = get_neighbors(tile, self.map_size)
-                zone_id = -1
-                for point in nbors:
-                    if self.zone_map[point[1]][point[0]] != -1:
-                        if zone_id != -1 and self.zone_map[point[1]][point[0]] != zone_id:
-                            nbor_id = self.zone_map[point[1]][point[0]]
-                            self.gate_points.append(tile)
-                            self.zones[zone_id].add_gate_point(nbor_id, tile)
-                            self.zones[nbor_id].add_gate_point(zone_id, tile)
-                            break
-                        else:
-                            zone_id = self.zone_map[point[1]][point[0]]
-                if zone_id != -1:
-                    self.zone_map[tile[1]][tile[0]] = zone_id
-                    self.zones[zone_id].points.append(tile)
+                self.flood_sea_floor((x, y), wavefront)
+        while not wavefront.empty():
+            tile = wavefront.get()
+            if self.zone_map[tile[1]][tile[0]] != -1:
+                continue
+            nbors = get_neighbors(tile, self.map_size)
+            zone_id = -1
+            nbor_id = -1
+            for point in nbors:
+                if self.zone_map[point[1]][point[0]] != -1:
+                    if zone_id != -1 and nbor_id == -1 and self.zone_map[point[1]][point[0]] != zone_id:
+                        nbor_id = self.zone_map[point[1]][point[0]]
+                        self.gate_points.append(tile)
+                        self.zones[zone_id].add_gate_point(nbor_id, tile)
+                        self.zones[nbor_id].add_gate_point(zone_id, tile)
+                    elif zone_id == -1:
+                        zone_id = self.zone_map[point[1]][point[0]]
+                elif self.map_data[point[1]][point[0]]:
+                    wavefront.put(point)
+            if zone_id != -1:
+                self.zone_map[tile[1]][tile[0]] = zone_id
+                self.zones[zone_id].points.append(tile)
         self.zone_no += 1
         for Z in self.zones:
             Z.size = len(Z.points)
             Z.update_center()
         return
 
-    def flood_sea_floor(self, current):
+    def flood_sea_floor(self, current, wavefront):
         """Recursively flood fill a given region in the sea floor with a given zone id.
         a) current:         Current point being processed (int, int).
+        b) wavefront:       Huygens wavefront created by boundary of fill (queue.Queue()).
         """
         q = queue.Queue()
         q.put(current)
@@ -92,27 +95,18 @@ class TerrainAnalyzer:
         self.zones[-1].points.append(current)
         while not q.empty():
             new_point = q.get()
-            nbors = get_next_positions(new_point, next_moves.adjacent_octile())
+            nbors = get_neighbors(new_point, self.map_size)
             for point in nbors:
-                if self.is_valid_sea_floor(point):
+                x, y = point
+                if not self.map_data[y][x]:
+                    continue
+                if self.zone_map[y][x] == -1 and self.height_map[y][x] == 0:
                     q.put(point)
-                    self.zone_map[point[1]][point[0]] = self.zone_no
+                    self.zone_map[y][x] = self.zone_no
                     self.zones[-1].points.append(point)
+                elif self.zone_map[y][x] == -1 and self.height_map[y][x] != 0:
+                    wavefront.put(point)
         return
-
-    def is_valid_sea_floor(self, point):
-        """Test if a given point is a valid unvisited point on the sea bed
-        a) point:           Point (int, int) to be tested.
-        b) return value:    True/False boolean value.
-        """
-        m, n = self.map_size
-        x, y = point
-        if x < 0 or x >= n or y < 0 or y >= m:
-            return False
-        elif not self.map_data[y][x] or self.zone_map[y][x] == self.zone_no or self.height_map[y][x] != 0:
-            return False
-        else:
-            return True
 
     def mouse_move(self, event):
         """Show coordinates of selected point"""
