@@ -24,10 +24,11 @@ class TerrainAnalyzer:
         self.manhattan_flood()
         return
 
-    def view_terrain(self, grid=True, gates=True):
+    def view_terrain(self, grid=True, gates=True, graph=True):
         """View all zones in the terrain
         a) grid:            Boolean Value. Display grid?
         b) gates:           Boolean Value. Do you want to show the gates?
+        c) graph:           Boolean Value. Plot connectivity graph?
         """
         plt.imshow(self.zone_map)
         plt.colorbar()
@@ -44,6 +45,12 @@ class TerrainAnalyzer:
         print(self.zone_no, "zones found")
         x, y = zip(*[Z.center for Z in self.zones])
         plt.scatter(x, y, edgecolors='white', color='red')
+        if graph:
+            for Z in self.zones:
+                p1 = Z.center
+                for zone_id in Z.entry_points:
+                    p2 = self.zones[zone_id].center
+                    plt.plot([p1[0], p2[0]], [p1[1], p2[1]], color='white')
         plt.show()
         return
 

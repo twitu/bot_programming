@@ -119,3 +119,18 @@ def manhattan(map_data, max_depth=5, return_depth_vector=False):
         return depth_map, depth_vector
     else:
         return depth_map
+
+
+def distance_transform(map_data, max_depth=6):
+    """Generate obstacle field based on distance transform from nearest obstacle.
+    a) map_data:                Boolean numpy array. True for passable, False for impassable.
+    b) max_depth:               Maximum allowed depth for sea floor.
+    c) return value:    Numpy ndarray for potential height.
+    """
+    d = np.ceil(scipy.ndimage.distance_transform_edt(map_data))
+    m, n = map_data.shape
+    for y in range(0, m):
+        for x in range(0, n):
+            if d[y][x] > max_depth:
+                d[y][x] = max_depth
+    return np.negative(d)
