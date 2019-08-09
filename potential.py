@@ -134,3 +134,4 @@ def distance_transform(map_data, max_depth=6):
             if d[y][x] > max_depth:
                 d[y][x] = max_depth
     return np.negative(d)
+

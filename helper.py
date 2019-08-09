@@ -1,6 +1,6 @@
-import next_moves
-
 from itertools import tee
+
+from moves import adjacent_octile
 
 
 def pairwise(iterable):
@@ -24,7 +24,7 @@ def get_next_positions(point, moves):
 
 def get_neighbors(point, map_size):
     m, n = map_size
-    octile_moves = next_moves.adjacent_octile()
+    octile_moves = adjacent_octile()
     nbors = get_next_positions(point, octile_moves)
 
     def is_valid(point):
@@ -33,3 +33,21 @@ def get_neighbors(point, map_size):
 
     selected_nbors = [point for point in nbors if is_valid(point)]
     return selected_nbors
+
+
+def get_x_and_y_from_store(store):
+    x, y = [], []
+    for key in store.keys():
+        x.append(key.x)
+        y.append(key.y)
+
+    return x, y
+
+
+def get_x_and_y_from_path(path):
+    x, y = [], []
+    for key in path:
+        x.append(key.x)
+        y.append(key.y)
+
+    return x, y

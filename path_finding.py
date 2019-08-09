@@ -182,7 +182,7 @@ class PathFinder:
             if cur_pos == end:
                 return store  # return store on reaching end
 
-            next_moves = [helper.add_tuple_elements(cur_pos, move) for move in moves]
+            next_moves = [cur_pos + move for move in moves]
             valid_moves = [move for move in next_moves if self.is_valid_move(move)]
             possible_state = [(total_cost(cur_pos, move, end), move) for move in valid_moves]
             valid_state = [(next_score, next_pos) for (next_score, next_pos) in possible_state
@@ -193,3 +193,20 @@ class PathFinder:
                 queue.push((next_score, next_pos))
 
         return {}
+
+    def best_potential_step(self, cur_pos, path=None, range=None):
+        """
+        Finds the point with the best potential score for the next step.
+        If path and range is given, finds the best potential score point
+        within the range of the next step prescribed by path.
+
+        Args:
+            cur_pos Point: current position
+            path List(Point): prescribed path from source to destination
+            range int: cutoff range from points along the path
+
+        Return:
+            Point: best step
+        """
+        return None
+

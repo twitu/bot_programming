@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import queue
-import next_moves
 import zone
 from potential import manhattan
 from helper import get_neighbors
