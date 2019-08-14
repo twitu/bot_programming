@@ -16,8 +16,8 @@ def linear_cost(scale=1):
     """
 
     def cost(start, end):
-        delta_x = abs(start[0] - end[0])
-        delta_y = abs(start[1] - end[1])
+        delta_x = abs(start.x - end.x)
+        delta_y = abs(start.y - end.y)
         return (delta_x + delta_y) * scale
 
     return cost
@@ -38,8 +38,8 @@ def euclidean_cost(scale=1):
     """
 
     def cost(start, end):
-        delta_x = abs(start[0] - end[0])
-        delta_y = abs(start[1] - end[1])
+        delta_x = abs(start.x - end.x)
+        delta_y = abs(start.y - end.y)
         return math.sqrt(delta_x * delta_x + delta_y * delta_y) * scale
 
     return cost
@@ -63,8 +63,8 @@ def diagonal_cost(lin=1, diag=1):
     """
 
     def cost(start, end):
-        delta_x = abs(start[0] - end[0])
-        delta_y = abs(start[1] - end[1])
+        delta_x = abs(start.x - end.x)
+        delta_y = abs(start.y - end.y)
         return (delta_x + delta_y) * lin + min(delta_x, delta_y) * (diag - 2 * lin)
 
     return cost
@@ -107,3 +107,4 @@ def randomized_cost(sigma, mu, h_func):
         return h_func(start, end) * random.normalvariate(mu, sigma)
 
     return cost
+

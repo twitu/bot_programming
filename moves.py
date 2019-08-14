@@ -1,3 +1,5 @@
+from point import Point
+
 import random
 
 
@@ -15,14 +17,14 @@ def adjacent_linear(randomize=False):
             or not
 
     Returns:
-        List (int, int): List of x and y offsets from
+        List (Point): List of point offsets from
         current position
     """
     moves = [
-        (0, 1),
-        (1, 0),
-        (0, -1),
-        (-1, 0)
+        Point(0, 1),
+        Point(1, 0),
+        Point(0, -1),
+        Point(-1, 0)
     ]
 
     if randomize:
@@ -45,18 +47,18 @@ def adjacent_octile(randomize=False):
             or not
 
     Returns:
-        List (int, int): List of x and y offsets from
+        List (Point): List of point offsets from
         current position
     """
     moves = [
-        (0, 1),
-        (1, 0),
-        (0, -1),
-        (-1, 0),
-        (1, 1),
-        (1, -1),
-        (-1, 1),
-        (-1, -1)
+        Point(0, 1),
+        Point(1, 0),
+        Point(0, -1),
+        Point(-1, 0),
+        Point(1, 1),
+        Point(1, -1),
+        Point(-1, 1),
+        Point(-1, -1)
     ]
 
     if randomize:
@@ -81,22 +83,22 @@ def bc19_4_radius(randomize=False):
             or not
 
     Returns:
-        List (int, int): List of x and y offsets from
+        List (Point): List of point offsets from
         current position
     """
     moves = [
-        (0, 1),
-        (1, 0),
-        (0, -1),
-        (-1, 0),
-        (1, 1),
-        (1, -1),
-        (-1, 1),
-        (-1, -1),
-        (2, 0),
-        (0, 2),
-        (0, -2),
-        (-2, 0)
+        Point(0, 1),
+        Point(1, 0),
+        Point(0, -1),
+        Point(-1, 0),
+        Point(1, 1),
+        Point(1, -1),
+        Point(-1, 1),
+        Point(-1, -1),
+        Point(2, 0),
+        Point(0, 2),
+        Point(0, -2),
+        Point(-2, 0)
     ]
 
     if randomize:
@@ -123,38 +125,38 @@ def bc19_9_radius(randomize=False):
             or not
 
     Returns:
-        List (int, int): List of x and y offsets from
+        List (Point): List of point offsets from
         current position
     """
     moves = [
-        (0, 1),
-        (1, 0),
-        (0, -1),
-        (-1, 0),
-        (1, 1),
-        (1, -1),
-        (-1, 1),
-        (-1, -1),
-        (2, 0),
-        (0, 2),
-        (0, -2),
-        (-2, 0),
-        (0, 3),
-        (1, 2),
-        (2, 1),
-        (3, 0),
-        (2, -1),
-        (1, -2),
-        (0, -3),
-        (-1, -2),
-        (-2, -1),
-        (-3, 0),
-        (-2, 1),
-        (-1, 2),
-        (2, 2),
-        (2, -2),
-        (-2, 2),
-        (-2, -2)
+        Point(0, 1),
+        Point(1, 0),
+        Point(0, -1),
+        Point(-1, 0),
+        Point(1, 1),
+        Point(1, -1),
+        Point(-1, 1),
+        Point(-1, -1),
+        Point(2, 0),
+        Point(0, 2),
+        Point(0, -2),
+        Point(-2, 0),
+        Point(0, 3),
+        Point(1, 2),
+        Point(2, 1),
+        Point(3, 0),
+        Point(2, -1),
+        Point(1, -2),
+        Point(0, -3),
+        Point(-1, -2),
+        Point(-2, -1),
+        Point(-3, 0),
+        Point(-2, 1),
+        Point(-1, 2),
+        Point(2, 2),
+        Point(2, -2),
+        Point(-2, 2),
+        Point(-2, -2)
     ]
 
     if randomize:
@@ -177,11 +179,12 @@ def adjacent_linear_directional(up_down=True):
             or left right movement
 
     Returns:
-        List (int, int): List of x and y offsets from
+        List (Point): List of point offsets from
         current position
     """
 
     if up_down:
-        return [(0, 1), (0, -1)]
+        return [Point(0, 1), Point(0, -1)]
     else:
-        return [(1, 0), (-1, 0)]
+        return [Point(1, 0), Point(-1, 0)]
+

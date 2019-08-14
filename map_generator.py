@@ -1,3 +1,6 @@
+from helper import get_x_and_y_from_store
+from helper import get_x_and_y_from_path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import perlin
@@ -31,18 +34,18 @@ def view_path(map_data, path, store=None, grid=True, markers=False):
     """
     # plot all the points in the store
     if store:
-        x, y = tuple(zip(*store.keys()))
+        x, y = get_x_and_y_from_store(store)
         plt.scatter(x, y, color='orange')
     # plot all the points in the path
     if path:
         start = path[0]
         end = path[-1]
-        x, y = tuple(zip(*path))
+        x, y = get_x_and_y_from_path(path)
         plt.plot(x, y, color='blue')
         if markers:
             plt.scatter(x, y, color='green')
-        plt.plot(start[0], start[1], 'gx')
-        plt.plot(end[0], end[1], 'rx')
+        plt.plot(start.x, start.y, 'gx')
+        plt.plot(end.x, end.y, 'rx')
         view_map(map_data, grid)
     else:
         print("Empty path")
