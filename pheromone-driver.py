@@ -1,6 +1,6 @@
 from pheromone import pheromone
 import numpy as np
-import next_moves
+import moves
 import random
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 
@@ -14,7 +14,7 @@ def addEnemy():
     ph.addEnemy(x,y)
 
 obstacles = getObstacleData(20,0.1)
-ph = pheromone(obstacles,next_moves.adjacent_octile(),decayRate=0,dropOff=0.0)
+ph = pheromone(obstacles,moves.adjacent_octile(),decayRate=0,dropOff=0.0)
 
 for i in range(40):
         addEnemy()
