@@ -1,9 +1,6 @@
-from enum import Enum
 from collections import namedtuple
 from potential_func import inert_repel, decided_path
 from moves import adjacent_linear, bc19_9_radius
-
-import moves
 
 UnitProperty = namedtuple('UnitProperty', "pot_func next_moves move_cost_func sight_range")
 
@@ -12,6 +9,7 @@ TYPES = {
     'PATH': UnitProperty(decided_path, None, None, None),
     'SCOUT': UnitProperty(inert_repel, adjacent_linear(), None, bc19_9_radius),
 }
+
 
 class Unit:
     __slots__ = UnitProperty._fields + ('cur_pos',)
@@ -29,13 +27,17 @@ class Unit:
     def visible_from(self, other):
         return self.cur_pos in other.get_cur_sight()
 
-    def can_see(self, other):
-        return other.cur_pos in self.get_cur_sight()
+    # TODO: simplify visible range as formula and remove multiple implementations
+    def can_see_point(self, other_point):
+        return other_point in self.cur_sight()
 
-    def potenial_at(self, point):
-        return self.pot_func(point)
+    def can_see(self, other):
+        return other.cur_pos in self.cur_sight()
+
+    def poten_at(self, point):
+        return self.pot_func(self.cur_pos, point)
+
 
 if __name__ == "__main__":
     for key in TYPES.keys():
         print(TYPES[key])
-

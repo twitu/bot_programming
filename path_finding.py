@@ -210,9 +210,9 @@ class PathFinder:
         Return:
             Point: best step
         """
-        if not path:
-            vis_path = [pos for pos in path if cur_unit.can_see(pos)]
-        game_map.mock = vis_path
+        if path:
+            vis_path = [Unit(TYPES['PATH'], pos) for pos in path if cur_unit.can_see_point(pos)]
+            game_map.mock.append(vis_path)
         next_pos = game_map.valid_next_pos(cur_unit)
         potential_values = game_map.next_pos_potential(cur_unit, next_pos)
         best_state = min(potential_values)

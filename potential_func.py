@@ -1,7 +1,8 @@
+from functools import partial
+
 import math
 
 from point import Point
-from functools import partial
 
 """
 This module defines potential functions that give the potential at a given
@@ -17,6 +18,7 @@ Potential here is analogous to elelctro-static potential, i.e +ve potential
 implies repulsion and -ve potential implies attraction.
 """
 
+
 def inert_repel(cur_pos, dest):
     """
     Inert potential is analogous to a wall or a bad tile, that cannot be
@@ -30,6 +32,7 @@ def inert_repel(cur_pos, dest):
         return math.inf
     return 0
 
+
 def inert_repel_with(cur_pos):
     """
     Curry inert function with cur_pos.
@@ -38,6 +41,7 @@ def inert_repel_with(cur_pos):
         function(dest): only requires dest argument to give potential value
     """
     return partial(inert_repel, cur_pos)
+
 
 def linear_cutoff(cur_pos, cutoff, dest):
     """
@@ -53,6 +57,7 @@ def linear_cutoff(cur_pos, cutoff, dest):
     else:
         return max(4 - dist, 0)
 
+
 def linear_cutoff_at(cur_pos, cutoff):
     """
     Curry linear cutoff function with cur_pos and cutoff
@@ -61,6 +66,7 @@ def linear_cutoff_at(cur_pos, cutoff):
         function(dest): only requires dest argument to give potential value
     """
     return partial(linear_cutoff, cur_pos, cutoff)
+
 
 def decided_path_point(cur_pos, slope, index, dest):
     """
@@ -72,7 +78,8 @@ def decided_path_point(cur_pos, slope, index, dest):
         potential value
     """
     dist = cur_pos.dist(dest)
-    return min(-index - 4 + dist*slope, 0)
+    return min(-index - 4 + dist * slope, 0)
+
 
 def decided_path(path, slope, dest):
     """
@@ -81,11 +88,12 @@ def decided_path(path, slope, dest):
 
     Return:
         potential value
-        """
+    """
     scores = [decided_path_point(point, slope, i, dest) for i, point in enumerate(path)]
     return min(scores)
 
-def decided_path_at(path, slope, dest):
+
+def decided_path_at(path, slope):
     """
     Curries decided_path arguments
 
@@ -93,6 +101,7 @@ def decided_path_at(path, slope, dest):
         function(dest): gives potential at dest
     """
     return partial(decided_path, path, slope)
+
 
 if __name__ == "__main__":
     from itertools import combinations
@@ -109,4 +118,3 @@ if __name__ == "__main__":
     path = [Point(0, 0), Point(0, 1), Point(1, 1)]
     dest = Point(-1, -1)
     print(decided_path(path, -2, dest))
-

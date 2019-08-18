@@ -6,6 +6,7 @@ from moves import adjacent_linear
 from path_finding import PathFinder
 from point import Point
 from game_map import Map
+from unit import Unit, TYPES
 
 map_data = None
 
@@ -22,11 +23,10 @@ if __name__ == "__main__":
     end = Point(41, 42)
     moves = adjacent_linear()
     cost_func = linear_cost()
-    start = timer()
     path_finder = PathFinder(linear_cost(), linear_cost(), is_valid_pos)
     path, store = path_finder.find_path(moves, start, end, return_store=True)
     game_map = Map(map_data)
-    game_map.dynamic = [Unit(TYPES['WALL'], block),]
+    game_map.active = [Unit(TYPES['WALL'], block), ]
     taken_path = []
     cur_unit = Unit(TYPES['SCOUT'], start)
     while True:
@@ -38,13 +38,13 @@ if __name__ == "__main__":
         else:
             taken_path.append(next_step)
 
-    while not path:
+    while path:
         best_step = path_finder.best_potential_step(game_map, cur_unit, path)
         taken_path.append(best_step)
         cur_unit.cur_pos = best_step
         del path[0]
 
-    map_generator.view_path(map_data, path)
+    map_generator.view_path(map_data, taken_path)
     # start = timer()
     # potn = potential.manhattan(map_data)
     # print(timer() - start)
