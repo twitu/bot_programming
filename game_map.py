@@ -16,7 +16,7 @@ class Map:
         return [unit for unit in self.active if cur_unit.can_see(unit)]
 
     def _poten(self, next_pos, actors):
-        poten = [0]*len(next_pos)
+        poten = [0] * len(next_pos)
 
         for i, pos in enumerate(next_pos):
             for actor in actors:
@@ -37,4 +37,3 @@ class Map:
         # total_poten = [max(a, b) for a, b in zip(mock_poten, total_poten)]
         total_poten = [a + b for a, b in zip(mock_poten, active_poten)]
         return [(score, pos) for score, pos in zip(total_poten, next_pos)]
-

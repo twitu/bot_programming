@@ -1,7 +1,7 @@
-from collections import namedtuple
-from potential_func import inert_repel, decided_path
+from potential_func import inert_repel
 from moves import adjacent_linear, bc19_9_radius
 
+# TODO: Create subclasses
 class Unit:
 
     def __init__(self, cur_pos, poten_func, next_moves, move_cost_func, sight_range):
@@ -34,6 +34,6 @@ class Unit:
     def poten_at(self, point):
         return self.poten_func(self.cur_pos, point)
 
+
 # Sample units
 SCOUT = Unit(None, inert_repel, adjacent_linear(), None, bc19_9_radius())
-

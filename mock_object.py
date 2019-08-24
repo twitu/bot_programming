@@ -29,7 +29,7 @@ class PathObject:
             if dist == 0:
                 return -math.inf
             else:
-                return (i + 1) * ((1/dist - 1/cutoff) * (slope - i))
+                return (i + 1) * ((1 / dist - 1 / cutoff) * (slope - i))
 
         scores = [score(path_point, i, pos) for i, path_point in enumerate(self.points)]
         return min(scores)
@@ -55,7 +55,7 @@ class WallObject:
         Returns:
             value: inf or 0
         """
-        if pos  in self.points:
+        if pos in self.points:
             return math.inf
         else:
             return 0
