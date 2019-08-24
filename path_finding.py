@@ -1,10 +1,8 @@
-from unit import Unit, TYPES
+import functools
+import itertools
 
 import helper
 import priority_queue
-
-import itertools
-import functools
 
 
 class PathFinder:
@@ -196,7 +194,7 @@ class PathFinder:
 
         return {}
 
-    def best_potential_step(self, game_map, cur_unit, path=None):
+    def best_potential_step(self, game_map, cur_unit):
         """
         Finds the point with the best potential score for the next step.
         If path and range is given, finds the best potential score point
@@ -210,9 +208,6 @@ class PathFinder:
         Return:
             Point: best step
         """
-        if path:
-            vis_path = [Unit(TYPES['PATH'], pos) for pos in path if cur_unit.can_see_point(pos)]
-            game_map.mock.append(vis_path)
         next_pos = game_map.valid_next_pos(cur_unit)
         potential_values = game_map.next_pos_potential(cur_unit, next_pos)
         best_state = min(potential_values)
@@ -238,4 +233,3 @@ class PathFinder:
         # calculate path from cur_pos to intersection
         # return concatenated path
         return None
-
