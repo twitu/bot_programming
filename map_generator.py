@@ -1,18 +1,54 @@
 from helper import get_x_and_y_from_store
 from helper import get_x_and_y_from_path
+from point import Point
 
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import numpy as np
 import perlin
 
-
-def view_map(map_data, grid=True):
-    """View map
-    a) map_data:    Boolean numpy array. True for passable, False for impassable.
-    b) grid:        Display grid. Defaults to True.
-    c) color code:  yellow for passable(1), purple for impassable(0).
-    d) coordinates: click anywhere on the map to view coordinates of that point.
+def view_map(map_data, stores=None, paths=None, points=None, grid=True):
     """
+    View map with entities like paths, stores, and points. Each
+    entity argument is a list and the z-order (visibility) increases
+    with index in the list. Among entities z-order varies as
+    stores < paths < points.
+
+    The map shows passable as yellow and impassable as purple. Each
+    entity list cycles through an indepedent color map, i.e. each
+    path in paths will have a different color. All points are
+    displayed in black color.
+
+    Args:
+        map_data:    Boolean numpy array. True for passable, False
+            for impassable.
+        coordinates: click anywhere on the map to view coordinates
+            of that point.
+        paths:       List of paths to be shown.
+        stores:      Point stores to be shown.
+        points:      Special points to be displayed.
+        grid:        Display grid. Defaults to True.
+    """
+
+    if stores:
+        colors = cm.autumn(np.linspace(0, 1, len(stores)))
+        for c, store in zip(colors, stores):
+            x, y = get_x_and_y_from_store(store)
+            plt.scatter(x, y, color=c)
+
+    if paths:
+        colors = cm.winter(np.linspace(0, 1, len(paths)))
+        for c, path in zip(colors, paths):
+            start, end = path[0], path[-1]
+            x, y = get_x_and_y_from_path(path)
+            plt.scatter(x, y, color=c)
+            plt.plot(start.x, start.y, marker='x')
+            plt.plot(end.x, end.y, marker='x')
+
+    if points:
+        for point in points:
+            plt.plot(point.x, point.y, color='black', marker='o')
+
     m, n = map_data.shape
     plt.imshow(map_data)
     plt.xticks(np.arange(0.5, n, 1.0), [])
@@ -76,3 +112,18 @@ def mouse_move(event):
     x, y = int(round(event.xdata)), int(round(event.ydata))
     print(x, y)
     return
+
+
+if __name__ == "__main__":
+    map_data = generate_map(100, 100, 0.35, 0.1, 25)
+    offsets = []
+    for i in range(3):
+        for j in range(3):
+            offsets.append(Point(i, j))
+
+    store_1 = {Point(41, 25) + offset: True for offset in offsets}
+    store_2 = {Point(42, 26) + offset: True for offset in offsets}
+    path = [Point(41, 25), Point(41, 26), Point(41, 27), Point(42, 27), Point(43, 27)]
+    point = Point(42, 37)
+    view_map(map_data, [store_1, store_2], [path], [point])
+

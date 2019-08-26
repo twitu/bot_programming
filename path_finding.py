@@ -1,8 +1,8 @@
+import functools
+import itertools
+
 import helper
 import priority_queue
-
-import itertools
-import functools
 
 
 class PathFinder:
@@ -194,19 +194,43 @@ class PathFinder:
 
         return {}
 
-    def best_potential_step(self, cur_pos, path=None, range=None):
+    def best_potential_step(self, game_map, cur_unit):
         """
         Finds the point with the best potential score for the next step.
         If path and range is given, finds the best potential score point
         within the range of the next step prescribed by path.
 
         Args:
-            cur_pos Point: current position
+            cur_pos Point: current unit
             path List(Point): prescribed path from source to destination
             range int: cutoff range from points along the path
 
         Return:
             Point: best step
         """
-        return None
+        next_pos = game_map.valid_next_pos(cur_unit)
+        potential_values = game_map.next_pos_potential(cur_unit, next_pos)
+        best_state = min(potential_values)
+        return best_state[1]
 
+    def reconstruct_path(self, cur_pos, path):
+        """
+        TODO
+        Reconstructs a new path from current position,
+        that joins the given path at some point
+
+        Args:
+            cur_pos: current position of unit
+            path: previous path from which unit has deviated
+
+        Return:
+            New path
+        """
+        # check if path is None and return None
+        # Find position of intersection with path,
+        # simple case is head of path
+        # complex case can be to analyze sensitivity of path points
+        # and set intersection at most sensitive point
+        # calculate path from cur_pos to intersection
+        # return concatenated path
+        return None

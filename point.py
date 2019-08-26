@@ -1,3 +1,5 @@
+import math
+
 class Point:
     __slots__ = 'x', 'y'
 
@@ -32,6 +34,19 @@ class Point:
         else:
             return False
 
+    def __str__(self):
+        return "({}, {})".format(self.x, self.y)
+
+    def __repr__(self):
+        return "Point({}, {})".format(self.x, self.y)
+
     def __hash__(self):
         return hash((self.x, self.y))
+
+    def dist(self, other, squared=True):
+        dist_squared = (self.x - other.x)**2 + (self.y - other.y)**2
+        if squared:
+            return dist_squared
+        else:
+            return math.sqrt(dist_squared)
 

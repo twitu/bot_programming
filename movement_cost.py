@@ -1,4 +1,5 @@
 import random
+
 import math
 
 
@@ -107,4 +108,3 @@ def randomized_cost(sigma, mu, h_func):
         return h_func(start, end) * random.normalvariate(mu, sigma)
 
     return cost
-
