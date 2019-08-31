@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import queue
-import zone
-from potential import manhattan
+from terrain import zone
+from terrain.potential import manhattan
 from helper import get_neighbors
 
 

@@ -1,8 +1,9 @@
-import scipy.ndimage
-import helper
-import numpy as np
-import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy.ndimage
+
+import helper
 
 
 def view_potential(potential, plot_type='colorgraded'):
@@ -134,4 +135,3 @@ def distance_transform(map_data, max_depth=6):
             if d[y][x] > max_depth:
                 d[y][x] = max_depth
     return np.negative(d)
-

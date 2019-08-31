@@ -7,6 +7,7 @@ import matplotlib.cm as cm
 import numpy as np
 import perlin
 
+
 def view_map(map_data, stores=None, paths=None, points=None, grid=True):
     """
     View map with entities like paths, stores, and points. Each
@@ -46,8 +47,9 @@ def view_map(map_data, stores=None, paths=None, points=None, grid=True):
             plt.plot(end.x, end.y, marker='x')
 
     if points:
-        for point in points:
-            plt.plot(point.x, point.y, color='black', marker='o')
+        x = [point.x for point in points]
+        y = [point.y for point in points]
+        plt.scatter(x, y, color='black', marker='o')
 
     m, n = map_data.shape
     plt.imshow(map_data)
@@ -126,4 +128,3 @@ if __name__ == "__main__":
     path = [Point(41, 25), Point(41, 26), Point(41, 27), Point(42, 27), Point(43, 27)]
     point = Point(42, 37)
     view_map(map_data, [store_1, store_2], [path], [point])
-
