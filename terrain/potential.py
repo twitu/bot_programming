@@ -1,39 +1,6 @@
-from mpl_toolkits import mplot3d
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage
-
 import helper
-
-
-def view_potential(potential, plot_type='colorgraded'):
-    """View colorplot of potential field.
-    a) potential:   Potential field.
-    b) plot_type:   'colorgraded', '3d_surface' or 'contour'.
-    """
-    if plot_type == 'colorgraded':
-        plt.imshow(potential)
-        plt.colorbar()
-        plt.show()
-    elif plot_type == '3d_surface':
-        plt.figure()
-        ax = plt.axes(projection="3d")
-        y, x = potential.shape
-        x = range(0, x)
-        y = range(0, y)
-        x, y = np.meshgrid(x, y)
-        ax.plot_surface(x, y, potential, rstride=1, cstride=1, cmap='winter', edgecolor='none')
-        plt.gca().invert_yaxis()
-        plt.show()
-    elif plot_type == 'contour':
-        y, x = potential.shape
-        x = range(0, x)
-        y = range(0, y)
-        x, y = np.meshgrid(x, y)
-        plt.contour(x, y, potential)
-        plt.gca().invert_yaxis()
-        plt.show()
-    return
 
 
 def coulomb(map_data, d0=2, nu=800, scale=100):
