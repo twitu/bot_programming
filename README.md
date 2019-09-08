@@ -20,6 +20,7 @@ We refer to a lot of existing work including blogs, videos, research papers and 
 ### Squad tactics and formations
 [Dynamic formations](https://drive.google.com/open?id=1aSlsK2X3IXli16IOhduAAX-XkciGpLYP) - Gives a generic framework to build squad formations.  
 [Real world squads](https://youtu.be/-rKRt5zVZgw) - Inspiration from historical squad formations.  
+[Formation controls](https://www.mdpi.com/2218-6581/7/4/67/htm) Review paper for formation control.  
 
 ### Enemy intelligence and prediction
 [Pheromones for tracking and prediction](https://drive.google.com/open?id=1ykFoo6yHyXDLIp0Uf3Quu2GSBWiZJ31r) - Concept for using pheromones to track enemy units
