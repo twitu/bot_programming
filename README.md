@@ -1,5 +1,5 @@
-## Path finding is a misnomer
-This repository documents our experiments with bot programming. We experiment with all topics from the mundane path finding to the abstract state management.
+## Path finding is a metaphor
+This repository documents our, that's [twitu](https://github.com/twitu), [arkonaire](https://github.com/arkonaire) and [lsampras](https://github.com/lsampras), experiments with bot programming, from the mundane path finding to the abstract state management.
 
 ## Reference material
 We refer to a lot of existing work including blogs, videos, research papers and books. A good reference ideally opens up a new avenue for experimenting.
