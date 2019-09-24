@@ -2,6 +2,8 @@ from pheromone import pheromone
 import numpy as np
 import moves
 import random
+from Visualization.MapVisualizer import saveColorGradedMap
+
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 
 def getObstacleData(size,prob):
@@ -19,15 +21,13 @@ ph = pheromone(obstacles,moves.adjacent_octile(),decayRate=0,dropOff=0.0)
 for i in range(40):
         addEnemy()
 
-# make sure directory exists
+
 
 for turn in range(10):
     if(turn%1 == 0):
-        # print("\n\n\n")
-        # print(ph.map)
         addEnemy()
-        ph.save_map("pheromone-sample/{}".format(turn))
+        # TODO: make sure directory exists
+        saveColorGradedMap("pheromone-sample/{}".format(turn),ph.map,underRange=(0.,0.,1.))
     ph.propogate()
     
 
-ph.save_map("pheromone-sample/{}".format(turn))
