@@ -1,6 +1,4 @@
-from helper import get_x_and_y_from_store
-from helper import get_x_and_y_from_path
-from mpl_toolkits import mplot3d
+from helper import get_x_and_y_from_itr
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -35,14 +33,14 @@ def view_map(map_data, stores=None, paths=None, points=None, grid=True):
     if stores:
         colors = cm.autumn(np.linspace(0, 1, len(stores)))
         for c, store in zip(colors, stores):
-            x, y = get_x_and_y_from_store(store)
+            x, y = get_x_and_y_from_itr(store)
             plt.scatter(x, y, color=c)
 
     if paths:
         colors = cm.winter(np.linspace(0, 1, len(paths)))
         for c, path in zip(colors, paths):
             start, end = path[0], path[-1]
-            x, y = get_x_and_y_from_path(path)
+            x, y = get_x_and_y_from_itr(path)
             plt.scatter(x, y, color=c)
             plt.plot(start.x, start.y, marker='x')
             plt.plot(end.x, end.y, marker='x')
@@ -73,13 +71,13 @@ def view_path(map_data, path, store=None, grid=True, markers=False):
     """
     # plot all the points in the store
     if store:
-        x, y = get_x_and_y_from_store(store)
+        x, y = get_x_and_y_from_itr(store)
         plt.scatter(x, y, color='orange')
     # plot all the points in the path
     if path:
         start = path[0]
         end = path[-1]
-        x, y = get_x_and_y_from_path(path)
+        x, y = get_x_and_y_from_itr(path)
         plt.plot(x, y, color='blue')
         if markers:
             plt.scatter(x, y, color='green')
