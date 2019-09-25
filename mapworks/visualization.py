@@ -3,6 +3,52 @@ from helper import get_x_and_y_from_itr
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
+import itertools
+
+
+def view_game_state(game_map, view_mock=False, grid=True):
+    """
+    Method shows current game state including static, active and mock points.
+    Active points should have cur_pos, Mock objects should have a list of
+    points, static is a 2D np array.
+
+    Note: Mock objects have low opacity (alpha=0.3)
+
+    Args:
+        game_map (Map object)
+        view_mock (Boolean): mock objects are shown if true
+    """
+    # show active units
+    unit_points = [game_unit.cur_pos for game_unit in game_map.active]
+    x, y = get_x_and_y_from_itr(unit_points)
+    colors = np.arange(len(unit_points))
+    plt.scatter(x, y, c=colors)
+
+    # show mock units if specified
+    if view_mock:
+        mock_objects = [game_mock.points for game_mock in game_map.mock]
+
+        # each mock object is colored different but points for each object
+        # are colored same
+        colors = [len(obj) for obj in mock_objects]
+        colors = [[i]*value for i, value in enumerate(colors)]
+        colors = list(itertools.chain.from_iterable(colors))
+        colors = np.array(colors)
+
+        mock_objects = itertools.chain.from_iterable(mock_objects)
+        x, y = get_x_and_y_from_itr(mock_objects)
+        plt.scatter(x, y, c=colors, alpha=0.3)
+
+    # show map with static passable and impassable terrain
+    map_data = game_map.static
+    m, n = map_data.shape
+    plt.imshow(map_data)
+    plt.xticks(np.arange(0.5, n, 1.0), [])
+    plt.yticks(np.arange(-0.5, m, 1.0), [])
+    plt.connect('button_press_event', mouse_move)
+    plt.grid(grid)
+    plt.show()
+    return
 
 
 def view_map(map_data, stores=None, paths=None, points=None, grid=True):
