@@ -6,6 +6,7 @@ import priority_queue
 
 
 class PathFinder:
+    MAX_VALID_NODES = 10000
     def __init__(self, movement_cost, heuristic_cost, is_valid_move):
         """
         Initializes the path finder with relevant functions. Helps reduce the number of
@@ -148,7 +149,7 @@ class PathFinder:
         else:
             return repaired_path
 
-    def generic_a_star(self, moves, start, end):
+    def generic_a_star(self, moves, start, end, max_nodes=MAX_VALID_NODES):
         """
         Performs an a* search on the map with the given set of moves
         queue implementation stores the state which consists of
@@ -157,12 +158,13 @@ class PathFinder:
         on position and stores actual cost of reaching the point
         along with parent point.
 
-        Note: end should be a valid point on the map
+        Note: end should be a valid point on the map for path to be found
 
         Args:
             moves: list of allowed moves at each point
             start: x and y coordinates of start point
             end: x and y coordinates of end point
+            max_nodes: max number of valid nodes to process
 
         Returns:
             store: contains the all the states encountered with links to parent states
@@ -179,11 +181,12 @@ class PathFinder:
         while not queue.is_empty():
             (_, cur_pos) = queue.pop()
             (cur_score, _) = store[cur_pos]
-            if cur_pos == end:
-                return store  # return store on reaching end
+            if cur_pos == end or max_nodes <= 0:
+                return store  # return store on reaching end or when exhausted nodes
 
             next_moves = [cur_pos + move for move in moves]
             valid_moves = [move for move in next_moves if self.is_valid_move(move)]
+            max_nodes -= len(valid_moves)
             possible_state = [(total_cost(cur_pos, move, end), move) for move in valid_moves]
             valid_state = [(next_score, next_pos) for (next_score, next_pos) in possible_state
                            if next_score <= cur_score + self.heuristic_cost(cur_pos, end)]
