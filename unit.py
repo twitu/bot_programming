@@ -1,5 +1,9 @@
+from collections import deque
+
+from movement_cost import diagonal_cost
+from moves import adjacent_linear, bc19_9_radius, adjacent_octile
 from potential_func import inert_repel
-from moves import adjacent_linear, bc19_9_radius
+
 
 # TODO: Create subclasses
 class Unit:
@@ -35,5 +39,55 @@ class Unit:
         return self.poten_func(self.cur_pos, point)
 
 
+class FormationUnit(Unit):
+    MAX_PREDICT = 5
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.is_leader = None
+        self.formation = None
+        self.leader_path = None
+        self.path = None
+
+    def copy(self, cur_pos):
+        if not cur_pos:
+            cur_pos = self.cur_pos
+        return FormationUnit(cur_pos, self.poten_func, self.next_moves, self.move_cost_func, self.sight_range)
+
+    def add_to_formation(self, formation, is_leader):
+        self.is_leader = is_leader
+        self.formation = formation
+
+    def set_dest(self, dest):
+        self.formation.init_dest(dest)
+        if self.is_leader:
+            self.path = deque(self.formation.leader_path)
+        else:
+            self.leader_path = deque(self.formation.leader_path)
+
+    def find_path(self):
+        if len(self.leader_path) > FormationUnit.MAX_PREDICT:
+            future_leader_pos = self.leader_path[FormationUnit.MAX_PREDICT]
+        else:
+            future_leader_pos = self.leader_path[-1]
+
+        _, short_dest = self.formation.predict_pos_from(future_leader_pos)
+        self.path = deque(self.formation.find_path(self.cur_pos, short_dest))
+
+    def next_pos(self):
+        if not self.path:
+            self.find_path()
+
+        self.leader_path.popleft()
+        self.cur_pos = self.path.popleft()
+
+    def __str__(self):
+        return "{}: {}".format(self.formation.index, self.cur_pos)
+
+    def __repr__(self):
+        return "{}: {}".format(self.formation.index, self.cur_pos)
+
+
 # Sample units
 SCOUT = Unit(None, inert_repel, adjacent_linear(), None, bc19_9_radius())
+FORMATION = FormationUnit(None, None, adjacent_octile, diagonal_cost(), bc19_9_radius())
