@@ -1,6 +1,15 @@
 ## Path finding is a metaphor
 This repository documents our, that's [twitu](https://github.com/twitu), [arkonaire](https://github.com/arkonaire) and [lsampras](https://github.com/lsampras), experiments with bot programming, from the mundane path finding to the abstract state management.
 
+To setup the environment, clone the repository and then run the following commands
+```bash
+cd path/to/bot_programming
+virtualenv venv --python=python3
+source venv/bin/activate
+pip install -r requirements.txt
+sudo apt-get install python3-tk
+```
+
 ## Reference material
 We refer to a lot of existing work including blogs, videos, research papers and books. A good reference ideally opens up a new avenue for experimenting.
 
