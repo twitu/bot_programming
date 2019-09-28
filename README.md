@@ -1,5 +1,14 @@
-## Path finding is a misnomer
-This repository documents our experiments with bot programming. We experiment with all topics from the mundane path finding to the abstract state management.
+## Path finding is a metaphor
+This repository documents our, that's [twitu](https://github.com/twitu), [arkonaire](https://github.com/arkonaire) and [lsampras](https://github.com/lsampras), experiments with bot programming, from the mundane path finding to the abstract state management.
+
+To setup the environment, clone the repository and then run the following commands
+```bash
+cd path/to/bot_programming
+virtualenv venv --python=python3
+source venv/bin/activate
+pip install -r requirements.txt
+sudo apt-get install python3-tk
+```
 
 ## Reference material
 We refer to a lot of existing work including blogs, videos, research papers and books. A good reference ideally opens up a new avenue for experimenting.
@@ -20,6 +29,7 @@ We refer to a lot of existing work including blogs, videos, research papers and 
 ### Squad tactics and formations
 [Dynamic formations](https://drive.google.com/open?id=1aSlsK2X3IXli16IOhduAAX-XkciGpLYP) - Gives a generic framework to build squad formations.  
 [Real world squads](https://youtu.be/-rKRt5zVZgw) - Inspiration from historical squad formations.  
+[Formation controls](https://www.mdpi.com/2218-6581/7/4/67/htm) Review paper for formation control.  
 
 ### Enemy intelligence and prediction
 [Pheromones for tracking and prediction](https://drive.google.com/open?id=1ykFoo6yHyXDLIp0Uf3Quu2GSBWiZJ31r) - Concept for using pheromones to track enemy units

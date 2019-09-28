@@ -1,5 +1,4 @@
 from itertools import tee
-
 from moves import adjacent_octile
 
 
@@ -35,19 +34,16 @@ def get_neighbors(point, map_size):
     return selected_nbors
 
 
-def get_x_and_y_from_store(store):
+def get_x_and_y_from_itr(store):
+    """
+    Extracts x and y coordinates into separate lists. Store can
+    be list or dictionary or any other iterable that returns points
+
+    store (iterable): iterable returns points
+    """
     x, y = [], []
-    for key in store.keys():
-        x.append(key.x)
-        y.append(key.y)
-
-    return x, y
-
-
-def get_x_and_y_from_path(path):
-    x, y = [], []
-    for key in path:
-        x.append(key.x)
-        y.append(key.y)
+    for pos in store:
+        x.append(pos.x)
+        y.append(pos.y)
 
     return x, y

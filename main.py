@@ -1,4 +1,5 @@
-import map_generator
+from mapworks import map_generator
+from mapworks import visualization
 from game_map import Map
 from mock_object import PathObject, WallObject
 from movement_cost import linear_cost
@@ -6,6 +7,8 @@ from moves import adjacent_linear
 from path_finding import PathFinder
 from point import Point
 from unit import SCOUT
+# from terrain.potential import manhattan
+# from terrain.terrain_analysis import TerrainAnalyzer
 
 map_data = None
 
@@ -45,4 +48,6 @@ if __name__ == "__main__":
         cur_unit.cur_pos = best_step
         del path[0]
 
-    map_generator.view_map(map_data, None, [taken_path], [block])
+    visualization.view_map(map_data, None, [taken_path], [block])
+    # visualization.view_potential_field(manhattan(map_data), '3d_surface')
+    # visualization.view_tactical_map(TerrainAnalyzer(map_data))

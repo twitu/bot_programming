@@ -1,11 +1,9 @@
+from collections import namedtuple
+
 import math
 
-class Point:
-    __slots__ = 'x', 'y'
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+class Point(namedtuple('Point', ['x', 'y'])):
+    __slots__ = ()
 
     def __add__(self, other):
         return Point(self.x + other.x, self.y + other.y)

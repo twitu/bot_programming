@@ -1,7 +1,7 @@
 class Map:
 
-    def __init__(self, game_map):
-        self.static = game_map
+    def __init__(self, map_data):
+        self.static = map_data
         self.active = []
         self.mock = []
         self.special = {}

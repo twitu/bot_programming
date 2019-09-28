@@ -1,8 +1,6 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import queue
-import zone
-from potential import manhattan
+from terrain import zone
+from terrain.potential import manhattan
 from helper import get_neighbors
 
 
@@ -21,36 +19,6 @@ class TerrainAnalyzer:
         self.zones = []
         self.gate_points = []
         self.manhattan_flood()
-        return
-
-    def view_terrain(self, grid=True, gates=True, graph=True):
-        """View all zones in the terrain
-        a) grid:            Boolean Value. Display grid?
-        b) gates:           Boolean Value. Do you want to show the gates?
-        c) graph:           Boolean Value. Plot connectivity graph?
-        """
-        plt.imshow(self.zone_map)
-        plt.colorbar()
-        plt.xticks(np.arange(0.5, self.map_size[1], 1.0), [])
-        plt.yticks(np.arange(-0.5, self.map_size[0], 1.0), [])
-        plt.gca().set_xlim([-0.5, self.map_size[1] - 0.5])
-        plt.gca().set_ylim([-0.5, self.map_size[0] - 0.5])
-        plt.gca().invert_yaxis()
-        plt.grid(grid)
-        plt.connect('button_press_event', self.mouse_move)
-        if gates and self.gate_points:
-            x, y = zip(*self.gate_points)
-            plt.scatter(x, y, color='green')
-        print(self.zone_no, "zones found")
-        x, y = zip(*[Z.center for Z in self.zones])
-        plt.scatter(x, y, edgecolors='white', color='red')
-        if graph:
-            for Z in self.zones:
-                p1 = Z.center
-                for zone_id in Z.entry_points:
-                    p2 = self.zones[zone_id].center
-                    plt.plot([p1[0], p2[0]], [p1[1], p2[1]], color='white')
-        plt.show()
         return
 
     # noinspection PyTypeChecker
