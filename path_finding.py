@@ -203,6 +203,10 @@ class PathFinder:
         If path and range is given, finds the best potential score point
         within the range of the next step prescribed by path.
 
+        Note: function does not compare does not calculate score of current
+        position. This may cause thrashing as unit might try to move to points
+        that are not an improvement on the current position. TODO
+
         Args:
             cur_pos Point: current unit
             path List(Point): prescribed path from source to destination
@@ -216,24 +220,24 @@ class PathFinder:
         best_state = min(potential_values)
         return best_state[1]
 
-    def reconstruct_path(self, cur_pos, path):
+    def reconstruct_path(self, moves, cur_pos, path):
         """
         TODO
         Reconstructs a new path from current position,
-        that joins the given path at some point
+        that joins the given path at some point.
+
+        Note: consider intersecting intersecting further along the
+        path based on point sensitivity TODO
 
         Args:
+            moves: set of moves possible on each turn
             cur_pos: current position of unit
             path: previous path from which unit has deviated
 
         Return:
             New path
         """
-        # check if path is None and return None
-        # Find position of intersection with path,
-        # simple case is head of path
-        # complex case can be to analyze sensitivity of path points
-        # and set intersection at most sensitive point
-        # calculate path from cur_pos to intersection
-        # return concatenated path
-        return None
+        dest = path.popleft()
+        correction = self.find_path(moves, cur_pos, dest)
+        path.extendleft(correction.reverse())
+        return path

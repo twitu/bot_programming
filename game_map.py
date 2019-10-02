@@ -9,12 +9,12 @@ class Map:
     def is_valid_point(self, pos):
         """
         Checks static points and active points. Returns
-        true if pos is unoccupied in either
+        true if pos is unoccupied in both
 
         Args:
             pos (Point): position to check
         """
-        return self.static[pos.y][pos.x] and any(lambda x: x.cur_pos == pos for x in self.active)
+        return 0 <= pos.x < 100 and 0 <= pos.y < 100 and self.static[pos.y][pos.x] and all(lambda x: x.cur_pos != pos for x in self.active)
 
     def valid_next_pos(self, cur_unit):
         return [pos for pos in cur_unit.next_pos() if self.is_valid_point(pos)]

@@ -11,6 +11,7 @@ import itertools
 def animate_game_state(game_map, frames=10, grid=True):
 
     fig = plt.figure()
+    fig.set_size_inches(12, 12, True)
     ax = plt.axes()
     active_scatter = None
     mock_scatter = None
@@ -43,7 +44,7 @@ def animate_game_state(game_map, frames=10, grid=True):
         active_scatter.set_offsets(units_pos)
         return active_scatter,
 
-    return animation.FuncAnimation(fig, update_plot, frames=frames, blit=False)
+    return animation.FuncAnimation(fig, update_plot, frames=frames, blit=True)
 
 
 def view_game_state(game_map, view_mock=False, grid=True):
@@ -57,6 +58,7 @@ def view_game_state(game_map, view_mock=False, grid=True):
     Args:
         game_map (Map object)
         view_mock (Boolean): mock objects are shown if true
+        grid (Boolean): True displays grid
     """
     # show active units
     unit_points = [game_unit.cur_pos for game_unit in game_map.active]
@@ -88,7 +90,6 @@ def view_game_state(game_map, view_mock=False, grid=True):
     plt.connect('button_press_event', mouse_move)
     plt.grid(grid)
     plt.show()
-    return
 
 
 def view_map(map_data, stores=None, paths=None, points=None, grid=True):

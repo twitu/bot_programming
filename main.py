@@ -23,37 +23,27 @@ def is_valid_pos(cur_pos):
 if __name__ == "__main__":
     map_data = map_generator.generate_map(100, 100, seed=25, obstacle_density=0.35)
     game_map = Map(map_data)
-    start = Point(18, 65)
+    start = Point(2, 2)
     end = Point(25, 65)
-    cur_unit = SCOUT.copy(start)
-    cur_unit.set_game_state(game_map)
-    game_map.active.append(cur_unit)
-    cur_unit.find_path(end)
-    anim = animate_game_state(game_map)
+    rel_pos = [
+        Point(-1, 1),
+        Point(1, 1),
+        Point(0, 0),
+        Point(-1, -1),
+        Point(1, -1),
+    ]
+
+    units_pos = [start + pos for pos in rel_pos]
+    units = []
+    for i, unit_pos in enumerate(units_pos):
+        unit = FORMATION.copy(start + rel_pos[i])
+        unit.add_to_formation(Formation(i, rel_pos, start, units_pos, game_map.is_valid_point), i == 2)  # 2nd index unit is leader
+        unit.set_dest(end)
+        unit.game_map = game_map
+        units.append(unit)
+
+    game_map = Map(map_data)
+    game_map.active = units
+
+    anim = animate_game_state(game_map, frames=200)
     anim.save('run_game.gif', writer='imagemagick', fps=10)
-    # rel_pos = [
-    #     Point(-1, 1),
-    #     Point(1, 1),
-    #     Point(0, 0),
-    #     Point(-1, -1),
-    #     Point(1, -1),
-    # ]
-    # units_pos = [start + pos for pos in rel_pos]
-    # units = []
-    # for i, unit_pos in enumerate(units_pos):
-    #     unit = FORMATION.copy(start + rel_pos[i])
-    #     unit.add_to_formation(Formation(i, rel_pos, 2, units_pos, is_valid_pos), i == 2)  # 2nd index unit is leader
-    #     unit.set_dest(end)
-    #     units.append(unit)
-
-    # game_map = Map(map_data)
-    # game_map.active = units
-        
-    # for unit in cycle(units):
-    #     if unit.is_leader and unit.cur_pos == end:
-    #         break
-
-    #     units_pos = [unit.cur_pos for unit in units]
-    #     unit.formation.update_units(units_pos)
-    #     unit.cur_pos = unit.next_pos()
-    #     print(units)

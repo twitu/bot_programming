@@ -1,5 +1,6 @@
 from collections import deque
 
+from mock_object import PathObject
 from path_finding import PathFinder
 from movement_cost import diagonal_cost, linear_cost
 from moves import adjacent_linear, bc19_9_radius, adjacent_octile
@@ -84,22 +85,19 @@ class FormationUnit(Unit):
         self.leader_path = None
         self.path = None
         self.game_map = None
+        self.at_objective = False # Temporary measure should be replace by concept of unit state
 
     def copy(self, cur_pos):
         if not cur_pos:
             cur_pos = self.cur_pos
-        return FormationUnit(cur_pos, self.poten_func, self.next_moves, self.move_cost_func, self.sight_range)
+        return FormationUnit(cur_pos, self.name, self.poten_func, self.next_moves, self.move_cost_func, self.sight_range)
 
     def add_to_formation(self, formation, is_leader):
         self.is_leader = is_leader
         self.formation = formation
 
     def set_dest(self, dest):
-        self.formation.init_dest(dest)
-        if self.is_leader:
-            self.path = deque(self.formation.leader_path)
-        else:
-            self.leader_path = deque(self.formation.leader_path)
+        self.leader_path = deque(self.formation.init_dest(dest))
 
     def find_path(self):
         if len(self.leader_path) > FormationUnit.MAX_PREDICT:
@@ -107,23 +105,34 @@ class FormationUnit(Unit):
         else:
             future_leader_pos = self.leader_path[-1]
 
-        _, short_dest = self.formation.predict_pos_from(future_leader_pos)
-        self.path = deque(self.formation.find_path(self.cur_pos, short_dest))
+        short_dest = self.formation.predict_pos_from(future_leader_pos)
+        if not short_dest:
+            self.path = deque([self.cur_pos])
+        else:
+            self.path = deque(self.formation.find_path(self.cur_pos, short_dest))
 
     def update_pos(self):
+        if self.at_objective:
+            return self.cur_pos
+
         if not self.path:
             self.find_path()
 
+        self.update_formation()
         self.leader_path.popleft()
+        if not self.leader_path:  # reached objective when leader path is empty
+            self.at_objective = True
         next_pos = self.path.popleft()
-        if self.game_map.is_valid_pos(next_pos):
+        if self.game_map.is_valid_point(next_pos):
             self.cur_pos = next_pos
         else:
-            self.cur_pos = next_pos
+            vis_path = [pos for pos in self.path if self.can_see_point(pos)]
+            self.game_map.mock = [PathObject(vis_path)]
+            self.cur_pos = self.path_finder.best_potential_step(self.game_map, self)
 
     def update_formation(self):
         leader_pos = self.leader_path[0]
-        units = self.game_map.active
+        units = self.game_map.active  # temporary measure as all active units are part of formation
         self.formation.update_units(units, leader_pos)
 
     def __str__(self):

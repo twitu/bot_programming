@@ -6,30 +6,46 @@ from path_finding import PathFinder
 
 
 class Formation:
+    """
+    Formation represents a group of units that move together. The leader position
+    can be any unit and does not need to be centered on any particular unit. All
+    units move relative to the leader position which advances one step towards
+    destination on each turn.
+    """
 
-    def __init__(self, index, rel_pos, leader_index, units, is_valid_pos):
+    def __init__(self, index, rel_pos, leader_pos, units, is_valid_pos):
+        """
+        Formation object is unique to each unit.
+
+        Args:
+            index (int): index of unit in position list
+            rel_pos (List[Point]): relative position of other units to leader_pos
+            leader_pos (Point): leader position
+            units (List[Point]): unit positions
+            is_valid_pos (func): function to determine if postion is valid
+        """
         self.index = index
-        self.leader_index = leader_index
         self.units = units
-        self.leader = units[leader_index]
+        self.leader = leader_pos
         self.rel_pos = rel_pos
-        self.turn_queue = cycle(units)
         self.is_valid_pos = is_valid_pos
         self.path_finder = PathFinder(diagonal_cost(), diagonal_cost(), self.is_valid_pos)
-        self.leader_path = None
         self.moves = adjacent_octile()
         self.dest = None
 
-    def update_units(self, units):
+    def update_units(self, units, leader_pos):
         """
         Update formation unit positions. Decentralized formation requires
         each unit to observe its neighbours and perform updates.
 
+        Note: Should only be called when leader_path is not empty
+
         Args:
             units (List[Unit]): List of units
+            leader_pos (Point): Leader position
         """
         self.units = units
-        self.leader = units[self.leader_index]
+        self.leader = leader_pos
 
     def init_dest(self, dest):
         """
@@ -40,7 +56,7 @@ class Formation:
             dest (Point): destination point
         """
         self.dest = dest
-        self.leader_path = self.path_finder.find_path(self.moves, self.leader, dest)
+        return self.path_finder.find_path(self.moves, self.leader, dest)
 
     def find_path(self, src, dest):
         """
@@ -65,4 +81,7 @@ class Formation:
         possible_pos = pos + self.rel_pos[self.index]
         store = self.path_finder.generic_a_star(self.moves, pos, possible_pos, 30)
         score_points = [(possible_pos.dist(pos), pos) for pos in store.keys()]
-        return min(score_points)
+        if score_points:
+            return min(score_points)[1]
+        else:
+            return None
