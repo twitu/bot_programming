@@ -7,7 +7,14 @@ class Map:
         self.special = {}
 
     def is_valid_point(self, pos):
-        return self.static[pos.y][pos.x]
+        """
+        Checks static points and active points. Returns
+        true if pos is unoccupied in either
+
+        Args:
+            pos (Point): position to check
+        """
+        return self.static[pos.y][pos.x] and any(lambda x: x.cur_pos == pos for x in self.active)
 
     def valid_next_pos(self, cur_unit):
         return [pos for pos in cur_unit.next_pos() if self.is_valid_point(pos)]

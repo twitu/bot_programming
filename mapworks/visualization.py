@@ -1,9 +1,49 @@
 from helper import get_x_and_y_from_itr
+from itertools import cycle
 
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 import matplotlib.cm as cm
 import numpy as np
 import itertools
+
+
+def animate_game_state(game_map, frames=10, grid=True):
+
+    fig = plt.figure()
+    ax = plt.axes()
+    active_scatter = None
+    mock_scatter = None
+    turn_queue = cycle(game_map.active)
+
+    # show active units
+    unit_points = [game_unit.cur_pos for game_unit in game_map.active]
+    x, y = get_x_and_y_from_itr(unit_points)
+    colors = np.arange(len(unit_points))
+    active_scatter = ax.scatter(x, y, c=colors)
+
+    # show map with static passable and impassable terrain
+    map_data = game_map.static
+    m, n = map_data.shape
+    im = plt.imshow(map_data)
+    plt.xticks(np.arange(0.5, n, 1.0), [])
+    plt.yticks(np.arange(-0.5, m, 1.0), [])
+    plt.grid(grid)
+    fig.canvas.draw()
+
+    def update_plot(i):
+        # pass cur unit game state information and make turn
+        cur_unit = next(turn_queue)
+        cur_unit.update_pos()
+
+        # update active units positions
+        unit_points = [game_unit.cur_pos for game_unit in game_map.active]
+        x, y = get_x_and_y_from_itr(unit_points)
+        units_pos = np.c_[x, y]
+        active_scatter.set_offsets(units_pos)
+        return active_scatter,
+
+    return animation.FuncAnimation(fig, update_plot, frames=frames, blit=False)
 
 
 def view_game_state(game_map, view_mock=False, grid=True):
