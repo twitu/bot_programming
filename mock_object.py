@@ -59,3 +59,26 @@ class WallObject:
             return math.inf
         else:
             return 0
+
+class EnemyObject:
+    """
+    Enemy objects exert a attraction/repulsion based on the proximity/probability of enemies 
+    Enemy objects can be initialized so that they can either attract or repel based on multiplier (default:repel)
+    """
+
+    def __init__(self, pheromone, multiplier=1):
+        self.pheromone = pheromone
+        self.multiplier = multiplier
+
+    def poten_at(self, pos):
+        """
+        Get enemy proximity 
+
+        Args:
+            pos: point to calculate potential at
+
+        Returns:
+            value: potential due to enemies
+        """
+        return (self.pheromone.map[pos.y][pos.x] + self.pheromone.obstacleData[pos.y][pos.x])*self.multiplier
+        
