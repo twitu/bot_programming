@@ -2,7 +2,7 @@ from pheromone import pheromone
 import numpy as np
 import moves
 import random
-from Visualization.MapVisualizer import saveColorGradedMap
+from mapworks import visualization
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 
@@ -27,7 +27,7 @@ for turn in range(10):
     if(turn%1 == 0):
         addEnemy()
         # TODO: make sure directory exists
-        saveColorGradedMap("pheromone-sample/{}".format(turn),ph.map,underRange=(0.,0.,1.))
+        visualization.saveColorGradedMap("pheromone-sample/{}".format(turn),ph.map,underRange=(0.,0.,1.))
     ph.propogate()
     
 
