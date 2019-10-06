@@ -38,3 +38,5 @@ We refer to a lot of existing work including blogs, videos, research papers and 
 [Game trees](https://drive.google.com/open?id=1ZEjRgJ6d2dAKhxyUgO6T58KRATf_4zNy) - Trees for decision making.  
 [Resource management](https://drive.google.com/open?id=159NNyEcaQbe9by84EiogYNMinCOJuhPW) - Framework for managing resources.  
 
+### Tools
+[Map Generation](http://devmag.org.za/2009/04/25/perlin-noise/) - Using perlin noise for random maps
