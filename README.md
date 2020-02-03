@@ -10,6 +10,16 @@ pip install -r requirements.txt
 sudo apt-get install python3-tk
 ```
 
+## Cool results
+Finding bottlenecks in a randomly generated map
+[bottlenecks](../assets/bottlenecks.jpg?raw=true)
+
+A* path finding with way points
+[waypoints](../assets/waypoints.png?raw=true)
+
+Dynamic squad movement based on obstacles
+[swarm](../assets/swarm.gif?raw=true)
+
 ## Reference material
 We refer to a lot of existing work including blogs, videos, research papers and books. A good reference ideally opens up a new avenue for experimenting.
 

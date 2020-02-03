@@ -8,7 +8,6 @@ import matplotlib.colors as colors
 import numpy as np
 import itertools
 
-
 def animate_game_state(game_map, frames=10, grid=True):
 
     fig = plt.figure()
@@ -22,7 +21,7 @@ def animate_game_state(game_map, frames=10, grid=True):
     unit_points = [game_unit.cur_pos for game_unit in game_map.active]
     x, y = get_x_and_y_from_itr(unit_points)
     colors = np.arange(len(unit_points))
-    active_scatter = ax.scatter(x, y, c=colors)
+    active_scatter = ax.scatter(x, y, c=colors, cmap="winter")
 
     # show map with static passable and impassable terrain
     map_data = game_map.static
