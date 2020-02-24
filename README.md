@@ -20,6 +20,9 @@ A* path finding with way points
 Dynamic squad movement based on obstacles  
 ![swarm](../assets/swarm.gif?raw=true)
 
+Enemy pheromones based on last known position  
+![pheromones](../assets/pheromones.gif?raw=true)
+
 ## Reference material
 We refer to a lot of existing work including blogs, videos, research papers and books. A good reference ideally opens up a new avenue for experimenting.
 
